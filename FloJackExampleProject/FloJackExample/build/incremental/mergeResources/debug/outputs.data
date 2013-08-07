@@ -1,0 +1,13 @@
+# incremental data. DO NOT EDIT.
+# format is <lastModified> <length> <SHA-1> <path>
+# Encoding is UTF-8
+1375763689000 1592 34c264c493c5654648545dce5397a8e317d74424 /Users/grundyoso/Development/flojack-android/FloJackExampleProject/FloJackExample/build/res/all/debug/values/values.xml
+1375763689000 275 4b4f725904cbf517b9638531ce6a5d061770e50a /Users/grundyoso/Development/flojack-android/FloJackExampleProject/FloJackExample/build/res/all/debug/values-sw720dp-land/values.xml
+1375763689000 344 a7bcbfb5291048c359eb9d78f8464da617bb8728 /Users/grundyoso/Development/flojack-android/FloJackExampleProject/FloJackExample/build/res/all/debug/values-v11/values.xml
+1375763689000 12909 c9572a0cffe90b0e1fc781f3a8b218a769c09a0c /Users/grundyoso/Development/flojack-android/FloJackExampleProject/FloJackExample/build/res/all/debug/drawable-xxhdpi/ic_launcher.png
+1375763689000 358 b48dcddfa189f163150d5e5cfbd784d2c60ce2a9 /Users/grundyoso/Development/flojack-android/FloJackExampleProject/FloJackExample/build/res/all/debug/values-v14/values.xml
+1375763689000 822 f6c014373240dbce01b9c3398191f93d7c1400fe /Users/grundyoso/Development/flojack-android/FloJackExampleProject/FloJackExample/build/res/all/debug/menu/main.xml
+1375767871000 3224 a11ecc9dd02f40647359694ed77c77a45a620f2d /Users/grundyoso/Development/flojack-android/FloJackExampleProject/FloJackExample/build/res/all/debug/layout/activity_main.xml
+1375763689000 7800 66e842aa6cdc939a21eecc6af883c26609a60462 /Users/grundyoso/Development/flojack-android/FloJackExampleProject/FloJackExample/build/res/all/debug/drawable-xhdpi/ic_launcher.png
+1375763689000 3302 24a38a0d25d65c92be1e99ab83875135d7a5acc0 /Users/grundyoso/Development/flojack-android/FloJackExampleProject/FloJackExample/build/res/all/debug/drawable-mdpi/ic_launcher.png
+1375763689000 5560 09d2928ca3d0cfdc3353742e0f6824ac63eb1b82 /Users/grundyoso/Development/flojack-android/FloJackExampleProject/FloJackExample/build/res/all/debug/drawable-hdpi/ic_launcher.png
