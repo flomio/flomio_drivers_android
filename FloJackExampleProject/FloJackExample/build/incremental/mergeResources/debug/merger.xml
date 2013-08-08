@@ -48,21 +48,23 @@
                 </string>
                 <string name="firmware_button" >Firmware Ver
                 </string>
-                <string name="utilities_label" >Utilities
-                </string>
                 <string name="ISO15693_label" >ISO15693
                 </string>
-                <string name="initialize_button" >Initialize
+                <string name="utilities_label" >Utilities
                 </string>
-                <string name="ISO14443A_label" >ISO14443A
+                <string name="Info_label" >Info
+                </string>
+                <string name="output_text" >Log Started!
                 </string>
                 <string name="app_name" >FloJackExample
                 </string>
-                <string name="hello_world" >Hello world!
+                <string name="ISO14443A_label" >ISO14443A
+                </string>
+                <string name="Felica_label" >Felica
+                </string>
+                <string name="initialize_button" >Initialize
                 </string>
                 <string name="hardware_button" >Hardware Ver
-                </string>
-                <string name="ISO14443B_label" >ISO14443B
                 </string>
             </file>
             <file

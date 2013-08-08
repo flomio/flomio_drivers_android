@@ -67,10 +67,13 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:text="@string/hello_world"
+            android:text="@string/output_text"
             android:id="@+id/outputTextView"
             android:background="#ffffff"
             android:padding="15dp"
+            android:scrollbars="vertical"
+            android:textIsSelectable="true"
+            android:maxLines="100"
                 />
 
 </LinearLayout>

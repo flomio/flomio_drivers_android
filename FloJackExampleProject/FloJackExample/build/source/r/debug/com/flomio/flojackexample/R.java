@@ -22,8 +22,9 @@ public final class R {
     }
     public static final class id {
         public static final int action_14443A=0x7f080006;
-        public static final int action_14443B=0x7f080007;
-        public static final int action_15693=0x7f080008;
+        public static final int action_15693=0x7f080007;
+        public static final int action_Felica=0x7f080008;
+        public static final int action_info=0x7f080009;
         public static final int firmwareButton=0x7f080002;
         public static final int hardwareButton=0x7f080003;
         public static final int initializeButton=0x7f080001;
@@ -40,16 +41,17 @@ public final class R {
     public static final class string {
         /**  From: file:/Users/grundyoso/Development/flojack-android/FloJackExampleProject/FloJackExample/src/main/res/values/strings.xml 
          */
-        public static final int ISO14443A_label=0x7f050000;
-        public static final int ISO14443B_label=0x7f050001;
+        public static final int Felica_label=0x7f050000;
+        public static final int ISO14443A_label=0x7f050001;
         public static final int ISO15693_label=0x7f050002;
-        public static final int app_name=0x7f050003;
-        public static final int firmware_button=0x7f050004;
-        public static final int hardware_button=0x7f050005;
-        public static final int hello_world=0x7f050006;
+        public static final int Info_label=0x7f050003;
+        public static final int app_name=0x7f050004;
+        public static final int firmware_button=0x7f050005;
+        public static final int hardware_button=0x7f050006;
         public static final int initialize_button=0x7f050007;
-        public static final int sniffer_button=0x7f050008;
-        public static final int utilities_label=0x7f050009;
+        public static final int output_text=0x7f050008;
+        public static final int sniffer_button=0x7f050009;
+        public static final int utilities_label=0x7f05000a;
     }
     public static final class style {
         /**  From: file:/Users/grundyoso/Development/flojack-android/FloJackExampleProject/FloJackExample/src/main/res/values/styles.xml 
