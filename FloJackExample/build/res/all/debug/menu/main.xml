@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="none">
+        <item android:id="@+id/action_14443A"
+              android:title="@string/ISO14443A_label"
+              android:orderInCategory="1"
+              android:showAsAction="ifRoom" />
+        <item android:id="@+id/action_15693"
+              android:title="@string/ISO15693_label"
+              android:orderInCategory="2"
+              android:showAsAction="ifRoom"/>
+        <item android:id="@+id/action_Felica"
+              android:title="@string/Felica_label"
+              android:orderInCategory="3"
+              android:showAsAction="ifRoom"/>
+        <item android:id="@+id/action_info"
+              android:title="@string/Info_label"
+              android:orderInCategory="4"
+              android:showAsAction="never"/>
+    </group>
+</menu>
+<!-- From: file:/Users/grundyoso/Development/flojack-android/FloJackExample/src/main/res/menu/main.xml -->
