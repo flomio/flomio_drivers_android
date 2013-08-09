@@ -1,8 +1,8 @@
 /** Copyright (C) 2009 by Aleksey Surkov.
-**
-**  Modified by Richard Grundy
-**  Flomio, Inc.
-*/
+ **
+ **  Modified by Richard Grundy on 8/6/13.
+ **  Flomio, Inc.
+ */
 
 package com.flomio.flojackexample;
 
@@ -15,7 +15,6 @@ import android.net.Uri;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -30,6 +29,9 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Create UIListener for FJNFCService to talk to MainActivity (via 'this' and 'new Handler')
+        mUIListener= new UIListener(this, new Handler());
     }
 
     @Override
@@ -95,8 +97,7 @@ public class MainActivity extends Activity {
             mHandler.post(new Runnable() {
                 public void run() {
                     TextView temp = (TextView) mParent.findViewById(R.id.outputTextView);
-                    for(int i=0;i<30;i++)
-                        temp.append("\n" + msg);
+                    temp.append("\n" + msg);
                 }
             });
         }
@@ -113,8 +114,6 @@ public class MainActivity extends Activity {
     @Override
     public void onStart() {
         super.onStart();
-        // Create UIListener for FJNFCService to talk to MainActivity (via 'this' and 'new Handler')
-        mUIListener= new UIListener(this, new Handler());
         // Create FJNFCService that takes a Listener that implements OnData and OnError methods
         mFJNFCService = new FJNFCService(mUIListener);
         // Start the FJNFCService Thread. As separate thread it won't hang up MainActivity (UI Thread)
