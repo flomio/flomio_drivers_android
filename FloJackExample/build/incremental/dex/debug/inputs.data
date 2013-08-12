@@ -1,23 +1,23 @@
 # incremental data. DO NOT EDIT.
 # format is <lastModified> <length> <SHA-1> <path>
 # Encoding is UTF-8
-1376017404000 797 7c849ab36ccc58b76cec56163d34785265836fe6 /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/R$string.class
-1376017404000 749 eaa0c4d89c0f176fecf44087ecf450d5dca93f95 /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/R$id.class
-1376017404000 452 3ff9c296429baed33db1901b74db4444658c2ffe /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/R$style.class
-1376017404000 747 9275f2d24e7609a38e72747116e90ed76c593087 /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/R.class
+1376323905000 797 7c849ab36ccc58b76cec56163d34785265836fe6 /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/R$string.class
+1376323905000 749 eaa0c4d89c0f176fecf44087ecf450d5dca93f95 /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/R$id.class
+1376323905000 452 3ff9c296429baed33db1901b74db4444658c2ffe /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/R$style.class
+1376323905000 747 9275f2d24e7609a38e72747116e90ed76c593087 /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/R.class
 1376017404000 295 d977d4df143646bc5a73ddb57310040fa5bff3ea /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/FJNFCService$FJNFCListener.class
 1376017404000 901 97ce595f1f8001d09112d3f8d06319a113da6b8d /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/MainActivity$2.class
 1376017404000 428 813d0c4c4cfb53a0ce0507f2c5e408c725e20d4b /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/R$drawable.class
-1376017404000 409 2c81dd9f5338e8094193859e6bf1df6a2565a822 /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/R$menu.class
+1376323905000 409 2c81dd9f5338e8094193859e6bf1df6a2565a822 /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/R$menu.class
 1376017404000 901 a170dd6fe0f68e9df8cce014e3146347e0cdcb2b /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/MainActivity$1.class
-1376017404000 4286 c388635bc8afcc8368118f3fa15efe4c02a62002 /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/MainActivity.class
+1376323905000 4286 c388635bc8afcc8368118f3fa15efe4c02a62002 /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/MainActivity.class
 1376017404000 361 d4049a9c7cf1b33187e391c45e1196e4a33c29e4 /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/R$attr.class
 1376017404000 482 05113e4a095bc76d8a589651e211bf541272f38a /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/R$dimen.class
 1375151670000 490914 3fe75433da602500cc71fcc1c46e5550291dd45d /Applications/Android Studio.app/sdk/extras/android/m2repository/com/android/support/support-v4/13.0.0/support-v4-13.0.0.jar
 1376017404000 1630 13e3efad715692f16f4b309c873abe591589a020 /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/MainActivity$UIListener.class
-1376017404000 424 b840c4d97f5d5955ca0ae63c98e202a0ad4674fb /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/R$layout.class
+1376323905000 424 b840c4d97f5d5955ca0ae63c98e202a0ad4674fb /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/R$layout.class
 1376017404000 359 e4f1cf7aaa779aabd507950139b00eff35573043 /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/BuildConfig.class
 1376017404000 901 0d60139fa75384768c128cb0eb2f00614092921c /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/MainActivity$3.class
-1376017404000 1447 b3f49097f81efcfbe2e55c681db90d6e5d810da7 /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/FJNFCService$uart_state.class
-1376017404000 2017 3a4375a873196021e1acb2508157faa8bf2d66e5 /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/FJNFCService.class
-1376017404000 1355 47a3a023d053ff880499c9f60cd9581d55b4e80a /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/MainActivity$UIListener$1.class
+1376332257000 1447 ac15181b567cbe037b379e5769f37734c7d56277 /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/FJNFCService$uart_state.class
+1376332328000 2993 0ae23a066fcbe9a78ee8d7f77072bca20594ac38 /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/FJNFCService.class
+1376323905000 1355 47a3a023d053ff880499c9f60cd9581d55b4e80a /Users/grundyoso/Development/flojack-android/FloJackExample/build/classes/debug/com/flomio/flojackexample/MainActivity$UIListener$1.class
