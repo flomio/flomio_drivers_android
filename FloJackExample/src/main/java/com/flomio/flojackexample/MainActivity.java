@@ -6,15 +6,20 @@
 
 package com.flomio.flojackexample;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -22,16 +27,38 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
+    private String LOG_TAG = "MainActivity";
+    public static final String SM_BCAST_SCAN = "com.restock.serialmagic.gears.action.SCAN";
     public FJNFCService mFJNFCService;
-    public UIListener mUIListener;
+    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Create UIListener for FJNFCService to talk to MainActivity (via 'this' and 'new Handler')
-        mUIListener= new UIListener(this, new Handler());
+        mHandler = new Handler();
+
+        Intent i = new Intent(MainActivity.this, FJNFCService.class);
+        try{
+            PendingIntent.getService(MainActivity.this, 0, i, 0).send();
+        }catch(Exception e){
+            Log.e(LOG_TAG, "failed with " + e);
+        }
+
+        IntentFilter filter = new IntentFilter(SM_BCAST_SCAN);
+        BroadcastReceiver scanReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String s = intent.getAction();
+                if (s.equals(SM_BCAST_SCAN)) {
+                    String scan = intent.getStringExtra("scan");
+                    Log.d(LOG_TAG, "SCAN!!" + scan);
+                    MainActivity.this.PostToUI(scan);
+                }
+            }
+        };
+        registerReceiver(scanReceiver, filter);
     }
 
     @Override
@@ -84,48 +111,24 @@ public class MainActivity extends Activity {
         }
     }
 
-    public class UIListener implements FJNFCService.FJNFCListener {
-        private MainActivity mParent;
-        private Handler mHandler;
-
-        public UIListener(Activity parent, Handler handler) {
-            mParent = (MainActivity) parent;
-            mHandler = handler;
-        }
-
-        private void PostToUI(final String msg) {
-            mHandler.post(new Runnable() {
-                public void run() {
-                    TextView temp = (TextView) mParent.findViewById(R.id.outputTextView);
-                    temp.append("\n" + msg);
-                }
-            });
-        }
-
-        public void onData(String parsedData) {
-            PostToUI(parsedData);
-        }
-
-        public void onError(String error) {
-            PostToUI(error);
-        }
+    public void PostToUI(final String msg) {
+        mHandler.post(new Runnable() {
+            public void run() {
+                TextView temp = (TextView) MainActivity.this.findViewById(R.id.outputTextView);
+                temp.append("\n" + msg);
+            }
+        });
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        // Create FJNFCService that takes a Listener that implements OnData and OnError methods
-        mFJNFCService = new FJNFCService(mUIListener);
-        // Start the FJNFCService Thread. As separate thread it won't hang up MainActivity (UI Thread)
-        mFJNFCService.start();
-
         setKeepScreenOn(this, true);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        mFJNFCService.interrupt();
         setKeepScreenOn(this, false);
     }
 

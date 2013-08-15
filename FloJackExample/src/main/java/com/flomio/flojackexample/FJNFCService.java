@@ -6,17 +6,22 @@
 
 package com.flomio.flojackexample;
 
+import android.app.IntentService;
+import android.content.Intent;
 import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioRecord;
+import android.media.AudioTrack;
 import android.media.MediaRecorder.AudioSource;
 import android.os.Build;
 import android.os.Process;
 import android.util.FloatMath;
 import android.util.Log;
 
-import java.util.Arrays;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
-public class FJNFCService extends Thread {
+public class FJNFCService extends IntentService {
     private final static int ZERO_TO_ONE_THRESHOLD = 0;        // threshold used to detect start bit
     private final static int SAMPLESPERBIT = 13;               // (44100 / HIGHFREQ)  // how many samples per UART bit
     private final static int SHORT =  (SAMPLESPERBIT/2 + SAMPLESPERBIT/4);
@@ -29,26 +34,21 @@ public class FJNFCService extends Thread {
     private final static int SAMPLE_NOISE_FLOOR = -100000;     // keeping running average and filter out noisy values around 0
 //    private final static double MESSAGE_SYNC_TIMEOUT = 0.500;  // seconds
     private final static int RATE = 44100;
-    private final static int BUFFER_SIZE = 4096;
-    private final static int BUFFER_SIZE_IN_MS = 1000 * BUFFER_SIZE / RATE; //3000
-    private final static int CHUNK_SIZE_IN_SAMPLES = 4096; // = 2 ^
-    private final static int CHUNK_SIZE_IN_MS = 1000 * CHUNK_SIZE_IN_SAMPLES / RATE;
-    private final static int BUFFER_SIZE_IN_BYTES = RATE * BUFFER_SIZE_IN_MS / 1000 * 2;
-    private final static int CHUNK_SIZE_IN_BYTES = RATE * CHUNK_SIZE_IN_MS / 1000 * 2;
 
     // Audio Unit attributes
-//    AURenderCallbackStruct		 _audioUnitRenderCallback;
-//    UInt32						 _maxFPS;
-//    DCRejectionFilter			*_remoteIODCFilter;
-//    CAStreamBasicDescription	 _remoteIOOutputFormat;
-//    UInt8                        _ignoreRouteChangeCount;
-    private AudioRecord remoteIOUnit;
+    private AudioRecord remoteInputUnit;
+    private AudioTrack remoteOutputUnit;
     private float hwSampleRate;
-    private int inNumberFrames = 0; // a frame is compose of one mic audio sample.  Stereo mics can have 2 channels
-    private int[] tailoredAudioData = new int[0];
     private long processingTime = 0;
     private byte logicOne, logicZero;
     private int outputAmplitude;
+
+    // Audio Unit attributes shared across classes
+    private int inNumberFrames = 0; // a frame is composed of one mic audio sample. Stereo mics can have 2 channels
+    private int outNumberFrames = 0; // a frame is composed of one audio sample. Stereo can have 2 channels
+    private ByteBuffer inAudioData;
+    private ByteBuffer outAudioData;
+    private long timeTracker;
 
     // NFC Service state variables
     private byte byteForTX;
@@ -73,11 +73,10 @@ public class FJNFCService extends Thread {
     }
 
     private String LOG_TAG = "FJNFCService";
-    private FJNFCListener mListener;
 
-    public FJNFCService(FJNFCListener listener) {
-        super();
-        mListener = listener;
+    public FJNFCService() {
+        super("FJNFCService");
+        Log.d(LOG_TAG, "constructor called.");
 
         // Logic high/low varies based on host device
         logicOne = getDeviceLogicOneValue();
@@ -86,62 +85,120 @@ public class FJNFCService extends Thread {
         outputAmplitude = (1<<24);  // TODO: create accessor for setting normal and high amplitude
     }
 
-    public interface FJNFCListener {
-        public void onData(String parsedData);
-        public void onError(String error);
+    @Override
+    public void onStart(Intent intent,  int startId) {
+        super.onStart(intent, startId);
+        Log.d(LOG_TAG, "onStart called");
+        new FJNFCListener().start();
     }
 
-    public void run() {
-        Log.i(LOG_TAG, "Starting to capture samples");
-        mListener.onData("Starting to capture samples");
+    @Override
+    public void onHandleIntent(Intent intent) {
+        try{
+            Log.d(LOG_TAG,"handle intent called");
 
-        Process
-                .setThreadPriority(Process.THREAD_PRIORITY_URGENT_AUDIO);
-        int bufferSize = BUFFER_SIZE;
-        int minBufferSize = AudioRecord.getMinBufferSize(RATE, AudioFormat.CHANNEL_IN_MONO,
-                AudioFormat.ENCODING_PCM_16BIT);
-        if (minBufferSize > bufferSize) {
-            bufferSize = minBufferSize;
-        }
-        remoteIOUnit = new AudioRecord(AudioSource.MIC, RATE,
-                AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize);
-        if (remoteIOUnit.getState() != AudioRecord.STATE_INITIALIZED) {
-            mListener.onError("Can't initialize AudioRecord");  // Needed <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-            return;
-        }
+        }catch(Exception e){
 
-        remoteIOUnit.startRecording();
-        while (!Thread.interrupted()) {
-            inNumberFrames = 0; // zero out the number of frames to adjust the buffer captured to size
-            byte[] audioData = new byte[BUFFER_SIZE_IN_BYTES / 2];
-            remoteIOUnit.read(audioData, 0, CHUNK_SIZE_IN_BYTES / 2);
-            if((inNumberFrames = remoteIOUnit.read(audioData, 0, CHUNK_SIZE_IN_BYTES / 2)) == AudioRecord.ERROR_BAD_VALUE){
-                mListener.onError("Read: bad value given");
-                break;
-            }
-            long t = System.currentTimeMillis();
-            if(tailoredAudioData.length != inNumberFrames){
-                tailoredAudioData = new int[inNumberFrames];
-            }
-            for(int i  = 0; i < inNumberFrames; i++){
-                tailoredAudioData[i] = (int) (audioData[i]/64.0);
-            }
-            String parsedData = floJackAURenderCallback(tailoredAudioData);
-            processingTime = (System.currentTimeMillis()-t);
-            mListener.onData(parsedData); // post UUID string to Host application
         }
-        remoteIOUnit.stop();
-        remoteIOUnit.release();
     }
 
-    private String floJackAURenderCallback(int[] ioData) {
+    public class FJNFCListener extends Thread {
+
+        public void run() {
+            Log.i(LOG_TAG, "starting thread to capture samples");
+            Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_AUDIO);
+
+            outNumberFrames = AudioTrack.getMinBufferSize(RATE, AudioFormat.CHANNEL_OUT_MONO,
+                    AudioFormat.ENCODING_PCM_16BIT);
+            remoteOutputUnit = new AudioTrack(AudioManager.STREAM_DTMF, RATE,
+                    AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, outNumberFrames,
+                    AudioTrack.MODE_STREAM);
+            if (remoteOutputUnit.getState() != AudioTrack.STATE_INITIALIZED) {
+                Log.e(LOG_TAG, "can't initialize AudioTrack");  // TODO needs some permissions?
+                return;
+            }
+            remoteOutputUnit.setPositionNotificationPeriod(outNumberFrames);
+            remoteOutputUnit.setPlaybackPositionUpdateListener(new AudioTrack.OnPlaybackPositionUpdateListener() {
+                @Override
+                public void onPeriodicNotification(AudioTrack track) {
+                    Log.d(LOG_TAG, "notified by AudioTrack subsystem");
+
+                    floJackAUOutputCallback(FJNFCService.this.outAudioData.asIntBuffer());
+                    processingTime = (System.currentTimeMillis() - FJNFCService.this.timeTracker);
+                }
+
+                @Override
+                public void onMarkerReached(AudioTrack track) {
+                    Log.d(LOG_TAG, "AudioTrack notification marker reached");
+                }
+            });
+
+            inNumberFrames = AudioRecord.getMinBufferSize(RATE, AudioFormat.CHANNEL_IN_MONO,
+                    AudioFormat.ENCODING_PCM_16BIT);
+            remoteInputUnit = new AudioRecord(AudioSource.MIC, RATE,
+                    AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, inNumberFrames);
+            if (remoteInputUnit.getState() != AudioRecord.STATE_INITIALIZED) {
+                Log.e(LOG_TAG, "can't initialize AudioRecord");  // Needed <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+                return;
+            }
+            remoteInputUnit.setPositionNotificationPeriod(inNumberFrames);
+            timeTracker = System.currentTimeMillis();
+            remoteInputUnit.setRecordPositionUpdateListener(new AudioRecord.OnRecordPositionUpdateListener() {
+                @Override
+                public void onPeriodicNotification(AudioRecord recorder) {
+                    Log.d(LOG_TAG, "notified by AudioRecord subsystem");
+
+//                    if (inAudioData.length != inNumberFrames){
+//                        inAudioData = new int[inNumberFrames];
+//                    }
+//                    for (int i  = 0; i < FJNFCService.this.inNumberFrames; i++){
+//                        FJNFCService.this.inAudioData[i] = (int) (inAudioData[i]/64.0);
+//                    }
+                    floJackAUInputCallback(FJNFCService.this.inAudioData.asIntBuffer());
+                    processingTime = (System.currentTimeMillis()-FJNFCService.this.timeTracker);
+                }
+
+                @Override
+                public void onMarkerReached(AudioRecord recorder) {
+                    Log.d(LOG_TAG, "AudioRecord notification marker reached");
+                }
+            });
+
+
+            remoteInputUnit.startRecording();
+            remoteOutputUnit.play();
+            inAudioData.allocate(inNumberFrames);
+            while (!Thread.interrupted()) {
+                inNumberFrames = 0; // zero out the number of frames to adjust the buffer captured to size
+                timeTracker = System.currentTimeMillis();
+                if (outNumberFrames != remoteOutputUnit.write(outAudioData.array(), 0, outNumberFrames)) {
+                    Log.e(LOG_TAG, "Write: bad value given");
+                    break;
+                }
+                timeTracker = System.currentTimeMillis();
+                if (inNumberFrames != remoteInputUnit.read(inAudioData, inNumberFrames)) {
+                    Log.e(LOG_TAG, "Read: bad value given");
+                    break;
+                }
+                try {
+                    Thread.sleep(1000);
+                    Log.d(LOG_TAG,"in progress");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            remoteOutputUnit.stop();
+            remoteInputUnit.stop();
+            remoteOutputUnit.release();
+            remoteInputUnit.release();
+        }
+    }
+
+    private void floJackAUInputCallback(IntBuffer inData) {
         // TX vars
-        int byteCounter = 1;
         uart_state decoderState = uart_state.STARTBIT;
         int lastSample = 0;
         int lastPhase2 = 0;
-        short parityTx = 0;
-        int phase = 0;
         int phase2 = 0;
         int sample = 0;
 
@@ -153,27 +210,15 @@ public class FJNFCService extends Thread {
         float sample_avg_low = 0;
         float sample_avg_high = 0;
 
-        // UART encode
-        boolean comm_sync_in_progress = false;
-        byte currentBit = 1;
-        uart_state encoderState = uart_state.NEXTBIT;
-        int nextPhaseEnc = SAMPLESPERBIT;
-        int phaseEnc = 0;
-        byte uartByteTx = 0x0;
-        int uartBitTx = 0;
-        int uartSyncBitTx = 0;
-        float[] uartBitEnc = new float[SAMPLESPERBIT];
-
-
         /************************************
          * UART Decoding
          ************************************/
-        for(int frameIndex = 0; frameIndex<inNumberFrames; frameIndex++) {
-            float raw_sample = ioData[frameIndex];
-            mListener.onData(String.format("%8ld, %8.0f\n", phase2, raw_sample));
+        for (int frameIndex = 0; frameIndex<inNumberFrames; frameIndex++) {
+            float raw_sample = inData.get(frameIndex);
+            Log.d(LOG_TAG, String.format("%8ld, %8.0f\n", phase2, raw_sample));
 
             if (decoderState == uart_state.DECODE_BYTE_SAMPLE)
-                mListener.onData(String.format("%8ld, %8.0f, %d\n", phase2, raw_sample, frameIndex));
+                Log.d(LOG_TAG, String.format("%8ld, %8.0f, %d\n", phase2, raw_sample, frameIndex));
 
             phase2 += 1;
             if (raw_sample < ZERO_TO_ONE_THRESHOLD) {
@@ -198,7 +243,7 @@ public class FJNFCService extends Thread {
                     case STARTBIT_FALL:
                         if ((SHORT < diff) && (diff < LONG)) {
                             // looks like we got a 1->0 transition.
-                            mListener.onData(String.format("Received a valid StartBit \n"));
+                            Log.d(LOG_TAG, String.format("Received a valid StartBit \n"));
                             decoderState = uart_state.DECODE_BYTE_SAMPLE;
                             bitNum = 0;
                             parityRx = 0;
@@ -214,7 +259,7 @@ public class FJNFCService extends Thread {
                             // We have a valid sample.
                             if (bitNum < 8) {
                                 // Sample is part of the byte
-                                //mListener.onData(String.format("Bit %d value %ld diff %ld parity %d\n", bitNum, sample, diff, parityRx & 0x01));
+                                //Log.d(LOG_TAG, String.format("Bit %d value %ld diff %ld parity %d\n", bitNum, sample, diff, parityRx & 0x01));
                                 uartByte = (byte)((uartByte >> 1) | (sample << 7));
                                 bitNum += 1;
                                 parityRx += sample;
@@ -222,14 +267,14 @@ public class FJNFCService extends Thread {
                             else if (bitNum == 8) {
                                 // Sample is a parity bit
                                 if(sample != (parityRx & 0x01)) {
-                                    mListener.onError(String.format(" -- parity %ld,  UartByte 0x%x\n", sample, uartByte));
+                                    Log.d(LOG_TAG, String.format(" -- parity %ld,  UartByte 0x%x\n", sample, uartByte));
                                     //decoderState = STARTBIT;
                                     parityGood = false;
                                     bitNum += 1;
                                 }
                                 else {
-                                    mListener.onData(String.format(" ++ UartByte: 0x%x\n", uartByte));
-                                    //mListener.onData(String.format(" +++ good parity: %ld \n", sample));
+                                    Log.d(LOG_TAG, String.format(" ++ UartByte: 0x%x\n", uartByte));
+                                    //Log.d(LOG_TAG, String.format(" +++ good parity: %ld \n", sample));
                                     parityGood = true;
                                     bitNum += 1;
                                 }
@@ -238,20 +283,20 @@ public class FJNFCService extends Thread {
                                 // Sample is stop bit
                                 if (sample == 1) {
                                     // Valid byte
-                                    //mListener.onData(String.format(" +++ stop bit: %ld \n", sample));
+                                    //Log.d(LOG_TAG, String.format(" +++ stop bit: %ld \n", sample));
 //                                if(frameIndex > (80))
 //                                {
-//                                    //mListener.onError(String.format("%f\n", raw_sample));
+//                                    //Log.d(LOG_TAG, String.format("%f\n", raw_sample));
 //                                    for(int k=frameIndex-80; k<256; k++)
 //                                    {
-//                                        Log.i(LOG_TAG,String.format("%d\n", ioData[k]));
+//                                        Log.i(LOG_TAG,String.format("%d\n", inData[k]));
 //                                    }
 //                                    Log.i(LOG_TAG,String.format("%f\n", raw_sample));
 //                                }
                                 }
                                 else {
                                     // Invalid byte
-                                    mListener.onError(String.format(" -- StopBit: %ld UartByte 0x%x\n", sample, uartByte));
+                                    Log.d(LOG_TAG, String.format(" -- StopBit: %ld UartByte 0x%x\n", sample, uartByte));
                                     parityGood = false;
                                 }
 
@@ -261,7 +306,7 @@ public class FJNFCService extends Thread {
                             }
                         }
                         else if (diff > LONG) {
-                            mListener.onData(String.format("Diff too long %ld\n", diff));
+                            Log.d(LOG_TAG, String.format("Diff too long %ld\n", diff));
                             decoderState = uart_state.STARTBIT;
                         }
                         else {
@@ -278,10 +323,27 @@ public class FJNFCService extends Thread {
             lastSample = sample;
         } //end: for(int j = 0; j < inNumberFrames; j++)
 
-        if (muteEnabled == false) {
-            // Prepare the sine wave
-            int values[] = new int[inNumberFrames];
+        return;
+    }
 
+    private void floJackAUOutputCallback(IntBuffer outData) {
+        // TX vars
+        short parityTx = 0;
+        int phase = 0;
+
+        // UART encode
+        boolean comm_sync_in_progress = false;
+        byte currentBit = 1;
+        uart_state encoderState = uart_state.NEXTBIT;
+        int nextPhaseEnc = SAMPLESPERBIT;
+        int phaseEnc = 0;
+        byte uartByteTx = 0x0;
+        int uartBitTx = 0;
+        int uartSyncBitTx = 0;
+        float[] uartBitEnc = new float[SAMPLESPERBIT];
+
+
+        if (muteEnabled == false) {
             /*******************************
              * Generate 22kHz Tone
              *******************************/
@@ -291,7 +353,7 @@ public class FJNFCService extends Thread {
                 waves += FloatMath.sin((float)Math.PI * phase+0.5f); // nfcService should be 22.050kHz
                 waves *= outputAmplitude; // <--------- make sure to divide by how many waves you're stacking
 
-                values[j] = (int) waves;
+                outData.put(j,(int)waves);
                 phase++;
             }
 
@@ -319,9 +381,8 @@ public class FJNFCService extends Thread {
                         uartByteTx = byteForTX;
                         byteQueuedForTX = false;
 
-                        mListener.onData(String.format("uartByteTx: 0x%x\n", uartByteTx));
+                        Log.d(LOG_TAG, String.format("uartByteTx: 0x%x\n", uartByteTx));
 
-                        byteCounter += 1;
                         uartBitTx = 0;
                         parityTx = 0;
 
@@ -350,22 +411,22 @@ public class FJNFCService extends Thread {
                         }
                         if (nextBit == currentBit) {
                             if (nextBit == 0) {
-                                for (float p = 0; p<SAMPLESPERBIT; p++) {
+                                for (int p = 0; p<SAMPLESPERBIT; p++) {
                                     uartBitEnc[p] = -FloatMath.sin((float)Math.PI * 2.0f / hwSampleRate * HIGHFREQ * (p+1));
                                 }
                             }
                             else {
-                                for (float p = 0; p<SAMPLESPERBIT; p++) {
+                                for (int p = 0; p<SAMPLESPERBIT; p++) {
                                     uartBitEnc[p] = FloatMath.sin((float)Math.PI * 2.0f / hwSampleRate * HIGHFREQ * (p + 1));
                                 }
                             }
                         } else {
                             if (nextBit == 0) {
-                                for (float p = 0; p<SAMPLESPERBIT; p++) {
+                                for (int p = 0; p<SAMPLESPERBIT; p++) {
                                     uartBitEnc[p] = FloatMath.sin((float)Math.PI * 2.0f / hwSampleRate * LOWFREQ * (p + 1));
                                 }
                             } else {
-                                for (float p = 0; p<SAMPLESPERBIT; p++) {
+                                for (int p = 0; p<SAMPLESPERBIT; p++) {
                                     uartBitEnc[p] = -FloatMath.sin((float)Math.PI * 2.0f / hwSampleRate * LOWFREQ * (p + 1));
                                 }
                             }
@@ -381,25 +442,21 @@ public class FJNFCService extends Thread {
                     default:
                         break;
                 } //end: switch(state)
-                values[j] = (int)(uartBitEnc[phaseEnc%SAMPLESPERBIT] * outputAmplitude);
+                outData.put(j, (int)(uartBitEnc[phaseEnc%SAMPLESPERBIT] * outputAmplitude));
                 phaseEnc++;
             } //end: for(int j = 0; j< inNumberFrames; j++)
             // copy data into left channel
             if((uartBitTx<=NUMSTOPBITS || uartSyncBitTx<=NUMSYNCBITS) && currentlySendingMessage == true) {
-                // TODO need to create worker thread and render audio per http://stackoverflow.com/questions/10158409/android-audio-streaming-sine-tone-generator-odd-behaviour
-                tailoredAudioData = Arrays.copyOf(values, values.length);
+                // TODO not sure if need to create worker thread and render audio per http://stackoverflow.com/questions/10158409/android-audio-streaming-sine-tone-generator-odd-behaviour
                 uartSyncBitTx++;
             }
             else {
                 comm_sync_in_progress = false;
-                // TODO Need to implement this SilenceData functionœ
-                SilenceData(ioData);
+                // TODO Need to implement this SilenceData function
+                //SilenceData(outData);
             }
         }
-
-        return "";  // TODO Need to return something that makes sense here
     }
-
     private void handleReceivedByte(byte myByte, boolean parityGood, double timestamp){
 
     }
