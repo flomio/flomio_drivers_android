@@ -29,8 +29,9 @@ public class MainActivity extends Activity {
 
     private String LOG_TAG = "MainActivity";
     public static final String SM_BCAST_SCAN = "com.restock.serialmagic.gears.action.SCAN";
-    public FJNFCService mFJNFCService;
     private Handler mHandler;
+    private BroadcastReceiver mScanReceiver;
+    private IntentFilter mFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +47,8 @@ public class MainActivity extends Activity {
             Log.e(LOG_TAG, "failed with " + e);
         }
 
-        IntentFilter filter = new IntentFilter(SM_BCAST_SCAN);
-        BroadcastReceiver scanReceiver = new BroadcastReceiver() {
+        IntentFilter mFilter = new IntentFilter(SM_BCAST_SCAN);
+        BroadcastReceiver mScanReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String s = intent.getAction();
@@ -58,7 +59,7 @@ public class MainActivity extends Activity {
                 }
             }
         };
-        registerReceiver(scanReceiver, filter);
+        registerReceiver(mScanReceiver, mFilter);
     }
 
     @Override
@@ -129,6 +130,7 @@ public class MainActivity extends Activity {
     @Override
     public void onStop() {
         super.onStop();
+        unregisterReceiver(mScanReceiver);
         setKeepScreenOn(this, false);
     }
 
