@@ -13,12 +13,11 @@ import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
-import android.os.*;
+import android.os.Build;
 import android.util.FloatMath;
 import android.util.Log;
 
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 
 public class FJNFCService extends IntentService {
     // Basic Audio system constants
@@ -50,8 +49,9 @@ public class FJNFCService extends IntentService {
     private int outputAmplitude;
 
     // Audio Unit attributes shared across classes
-    private ByteBuffer inAudioData;
-    private ByteBuffer outAudioData;
+    private ShortBuffer inAudioData;
+    private ShortBuffer outAudioData;
+    //private short[] inAudioData;
     private long timeTracker;
 
     // NFC Service state variables
@@ -110,20 +110,6 @@ public class FJNFCService extends IntentService {
             Log.e(LOG_TAG, "can't initialize AudioTrack");  // TODO needs some permission?
             return;
         }
-        remoteOutputUnit.setPositionNotificationPeriod(SAMPLES);
-        remoteOutputUnit.setPlaybackPositionUpdateListener(new AudioTrack.OnPlaybackPositionUpdateListener() {
-            @Override
-            public void onPeriodicNotification(AudioTrack track) {
-                floJackAUOutputCallback(FJNFCService.this.outAudioData.asIntBuffer());
-                processingTime = (System.currentTimeMillis() - FJNFCService.this.timeTracker);
-                Log.d(LOG_TAG, String.format("notified by AudioTrack subsystem in %dms", processingTime));
-            }
-
-            @Override
-            public void onMarkerReached(AudioTrack track) {
-                Log.d(LOG_TAG, "AudioTrack notification marker reached");
-            }
-        });
 
         // Set Number of frames to be 4 times larger than the minimum audio capture size.  This
         // is to allow for small chunks of the input samples to be processed while the others
@@ -142,20 +128,6 @@ public class FJNFCService extends IntentService {
             Log.e(LOG_TAG, "can't initialize AudioRecord");  // Needed <uses-permission android:name="android.permission.RECORD_AUDIO"/>
             return;
         }
-        remoteInputUnit.setPositionNotificationPeriod(SAMPLES); // Set notification that it's time to process samples
-        remoteInputUnit.setRecordPositionUpdateListener(new AudioRecord.OnRecordPositionUpdateListener() {
-            @Override
-            public void onPeriodicNotification(AudioRecord recorder) {
-                floJackAUInputCallback(FJNFCService.this.inAudioData.asIntBuffer());
-                processingTime = (System.currentTimeMillis()-FJNFCService.this.timeTracker);
-                Log.d(LOG_TAG, String.format("notified by AudioRecord subsystem in %dms", processingTime));
-            }
-
-            @Override
-            public void onMarkerReached(AudioRecord recorder) {
-                Log.d(LOG_TAG, "AudioRecord notification marker reached");
-            }
-        });
 
         remoteInputUnit.startRecording();
         remoteOutputUnit.play();
@@ -174,8 +146,9 @@ public class FJNFCService extends IntentService {
     public class FJNFCListener extends Thread {
 
         FJNFCListener() {
-            inAudioData = ByteBuffer.allocate(SAMPLES);
-            outAudioData = ByteBuffer.allocate(SAMPLES);
+            inAudioData = ShortBuffer.allocate(SAMPLES);
+//            outAudioData = ByteBuffer.allocate(SAMPLES);
+//            inAudioData = new short[SAMPLES];
         }
 
         public void run() {
@@ -187,13 +160,22 @@ public class FJNFCService extends IntentService {
             while (!Thread.interrupted()) {
                 int offset = 0;
 //                timeTracker = System.currentTimeMillis();
-//                while (offset < SAMPLES && !Thread.interrupted()) {
-//                    offset += remoteOutputUnit.write(outAudioData.array(), offset, SAMPLES - offset);
+//                if (remoteOutputUnit.write(outAudioData.array(), 0, SAMPLES) < SAMPLES) {
+//                    Log.e(LOG_TAG, "we didn't write enough samples to playback audio buffer.");
+//                    break;
 //                }
+//                floJackAUOutputCallback(outAudioData);
+//                processingTime = (System.currentTimeMillis() - timeTracker);
+//                Log.d(LOG_TAG, String.format("played samples in %dms", processingTime));
+
                 timeTracker = System.currentTimeMillis();
-                while (offset < SAMPLES && !Thread.interrupted()) {
-                    offset += remoteInputUnit.read(inAudioData.array(), offset, SAMPLES - offset);
+                if (remoteInputUnit.read(inAudioData.array(), 0, SAMPLES) < SAMPLES) {
+                    Log.e(LOG_TAG, "we didn't read enough samples from recorded audio buffer.");
+                    break;
                 }
+                floJackAUInputCallback(inAudioData);
+                processingTime = (System.currentTimeMillis()-timeTracker);
+                Log.d(LOG_TAG, String.format("processed samples in %dms", processingTime));
             }
             remoteOutputUnit.stop();     // stop playing date out
             remoteInputUnit.stop();      // stop sampling data in
@@ -202,7 +184,7 @@ public class FJNFCService extends IntentService {
         }
     }
 
-    private void floJackAUInputCallback(IntBuffer inData) {
+    private void floJackAUInputCallback(ShortBuffer inData) {
         // TX vars
         uart_state decoderState = uart_state.STARTBIT;
         int lastSample = 0;
@@ -332,7 +314,7 @@ public class FJNFCService extends IntentService {
         return;
     }
 
-    private void floJackAUOutputCallback(IntBuffer outData) {
+    private void floJackAUOutputCallback(ShortBuffer outData) {
         // TX vars
         short parityTx = 0;
         int phase = 0;
@@ -359,7 +341,7 @@ public class FJNFCService extends IntentService {
                 waves += FloatMath.sin((float)Math.PI * phase+0.5f); // nfcService should be 22.050kHz
                 waves *= outputAmplitude; // <--------- make sure to divide by how many waves you're stacking
 
-                outData.put(j,(int)waves);
+                outData.put(j,(short)waves);
                 phase++;
             }
 
@@ -448,7 +430,7 @@ public class FJNFCService extends IntentService {
                     default:
                         break;
                 } //end: switch(state)
-                outData.put(j, (int)(uartBitEnc[phaseEnc%SAMPLESPERBIT] * outputAmplitude));
+                outData.put(j, (short)(uartBitEnc[phaseEnc%SAMPLESPERBIT] * outputAmplitude));
                 phaseEnc++;
             } //end: for(int j = 0; j< outData.capacity(); j++)
             // copy data into left channel
