@@ -223,6 +223,12 @@ public class FJNFCService extends IntentService {
                 int diff = phase2 - lastPhase2;
                 switch (decoderState) {
                     case STARTBIT:
+                        Intent i = new Intent();
+                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        i.setAction("com.restock.serialmagic.gears.action.SCAN");
+                        i.putExtra("scan","01020304050607");
+                        startActivity(i);
+
                         if (lastSample == 0 && sample == 1) {
                             // low->high transition. Now wait for a long period
                             decoderState = uart_state.DECODE_BYTE_SAMPLE;
