@@ -37,9 +37,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="116fe25f-b59c-4565-9e55-38c9e2755673" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/src/main/AndroidManifest.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/flomio/flojackexample/FJNFCService.java" afterPath="$PROJECT_DIR$/src/main/java/com/flomio/flojackexample/FJNFCService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/flomio/flojackexample/MainActivity.java" afterPath="$PROJECT_DIR$/src/main/java/com/flomio/flojackexample/MainActivity.java" />
     </list>
     <ignored path="FloJackExample.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -110,7 +108,22 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/main/java/com/flomio/flojackexample/FJNFCService.java" line="192" class="com.flomio.flojackexample.FJNFCService.FJNFCListener" package="com.flomio.flojackexample">
+      <breakpoint url="file://$PROJECT_DIR$/src/main/java/com/flomio/flojackexample/FJNFCService.java" line="224" class="com.flomio.flojackexample.FJNFCService" package="com.flomio.flojackexample">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="frameIndex==1024&#13;&#13;JAVA" />
+        <option name="LOG_MESSAGE" value="&#13;&#13;JAVA" />
+      </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/main/java/com/flomio/flojackexample/FJNFCService.java" line="225" class="com.flomio.flojackexample.FJNFCService" package="com.flomio.flojackexample">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -138,7 +151,7 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/flomio/flojackexample/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="42" column="0" selection-start="1225" selection-end="1225" vertical-scroll-proportion="0.0" vertical-offset="461" max-vertical-offset="1710">
+            <state line="42" column="0" selection-start="1225" selection-end="1225" vertical-scroll-proportion="0.0" vertical-offset="521" max-vertical-offset="1710">
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="imports" expanded="true" />
@@ -192,19 +205,10 @@
       <file leaf-file-name="FJNFCService.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/flomio/flojackexample/FJNFCService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="192" column="0" selection-start="8520" selection-end="8520" vertical-scroll-proportion="0.6420233" vertical-offset="2445" max-vertical-offset="6930">
+            <state line="225" column="0" selection-start="9787" selection-end="9787" vertical-scroll-proportion="7.2361445" vertical-offset="372" max-vertical-offset="9945">
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="imports" expanded="true" />
-                <element signature="class#uart_state#0;class#FJNFCService#0" expanded="false" />
-                <element signature="method#onStart#0;class#FJNFCService#0" expanded="false" />
-                <element signature="method#onHandleIntent#0;class#FJNFCService#0" expanded="false" />
-                <element signature="method#floJackAUOutputCallback#0;class#FJNFCService#0" expanded="false" />
-                <element signature="e#24845#24904#0" expanded="false" />
-                <element signature="method#getDeviceLogicOneValue#0;class#FJNFCService#0" expanded="false" />
-                <element signature="docComment;method#getDeviceLogicZeroValue#0;class#FJNFCService#0" expanded="false" />
-                <element signature="method#getDeviceLogicZeroValue#0;class#FJNFCService#0" expanded="false" />
-                <marker date="1376593991000" expanded="true" signature="7818:8097" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -309,6 +313,28 @@
               <option name="myItemId" value="FloJackExample" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="support-v4-13.0.0" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="support-v4-13.0.0.jar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="FloJackExample" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -371,7 +397,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="GoToFile.includeJavaFiles" value="false" />
-    <property name="project.structure.last.edited" value="Global Libraries" />
+    <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="MemberChooser.sorted" value="false" />
@@ -559,7 +585,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="22" width="1420" height="860" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32972974" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -567,7 +593,7 @@
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32969433" sideWeight="0.67027026" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32972974" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.5972973" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.34864864" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -579,7 +605,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2496361" sideWeight="0.4027027" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2496361" sideWeight="0.65135133" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32972974" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -677,15 +703,6 @@
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="imports" expanded="true" />
-            <element signature="class#uart_state#0;class#FJNFCService#0" expanded="false" />
-            <element signature="method#onStart#0;class#FJNFCService#0" expanded="false" />
-            <element signature="method#onHandleIntent#0;class#FJNFCService#0" expanded="false" />
-            <element signature="method#floJackAUOutputCallback#0;class#FJNFCService#0" expanded="false" />
-            <element signature="e#24845#24904#0" expanded="false" />
-            <element signature="method#getDeviceLogicOneValue#0;class#FJNFCService#0" expanded="false" />
-            <element signature="docComment;method#getDeviceLogicZeroValue#0;class#FJNFCService#0" expanded="false" />
-            <element signature="method#getDeviceLogicZeroValue#0;class#FJNFCService#0" expanded="false" />
-            <marker date="1376593991000" expanded="true" signature="7818:8097" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -718,15 +735,6 @@
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="imports" expanded="true" />
-            <element signature="class#uart_state#0;class#FJNFCService#0" expanded="false" />
-            <element signature="method#onStart#0;class#FJNFCService#0" expanded="false" />
-            <element signature="method#onHandleIntent#0;class#FJNFCService#0" expanded="false" />
-            <element signature="method#floJackAUOutputCallback#0;class#FJNFCService#0" expanded="false" />
-            <element signature="e#24845#24904#0" expanded="false" />
-            <element signature="method#getDeviceLogicOneValue#0;class#FJNFCService#0" expanded="false" />
-            <element signature="docComment;method#getDeviceLogicZeroValue#0;class#FJNFCService#0" expanded="false" />
-            <element signature="method#getDeviceLogicZeroValue#0;class#FJNFCService#0" expanded="false" />
-            <marker date="1376593991000" expanded="true" signature="7818:8097" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -735,6 +743,28 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="2659" column="19" selection-start="113797" selection-end="113797" vertical-scroll-proportion="0.33286518" vertical-offset="38448" max-vertical-offset="78840">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/flomio/flojackexample/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="42" column="0" selection-start="1225" selection-end="1225" vertical-scroll-proportion="0.0" vertical-offset="521" max-vertical-offset="1710">
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#1575#1998#0" expanded="true" />
+            <element signature="e#1987#1988#0" expanded="true" />
+            <element signature="method#onCreateOptionsMenu#0;class#MainActivity#0" expanded="false" />
+            <element signature="method#onOptionsItemSelected#0;class#MainActivity#0" expanded="false" />
+            <element signature="e#2641#2848#0" expanded="true" />
+            <element signature="e#2829#2830#0" expanded="true" />
+            <element signature="e#3066#3272#0" expanded="true" />
+            <element signature="e#3253#3254#0" expanded="true" />
+            <element signature="e#3491#3698#0" expanded="true" />
+            <element signature="e#3679#3680#0" expanded="true" />
+            <element signature="e#4220#4429#0" expanded="true" />
+            <element signature="e#4418#4419#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -764,43 +794,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/flomio/flojackexample/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="0" selection-start="1225" selection-end="1225" vertical-scroll-proportion="0.0" vertical-offset="461" max-vertical-offset="1710">
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="imports" expanded="true" />
-            <element signature="e#1575#1998#0" expanded="true" />
-            <element signature="e#1987#1988#0" expanded="true" />
-            <element signature="method#onCreateOptionsMenu#0;class#MainActivity#0" expanded="false" />
-            <element signature="method#onOptionsItemSelected#0;class#MainActivity#0" expanded="false" />
-            <element signature="e#2641#2848#0" expanded="true" />
-            <element signature="e#2829#2830#0" expanded="true" />
-            <element signature="e#3066#3272#0" expanded="true" />
-            <element signature="e#3253#3254#0" expanded="true" />
-            <element signature="e#3491#3698#0" expanded="true" />
-            <element signature="e#3679#3680#0" expanded="true" />
-            <element signature="e#4220#4429#0" expanded="true" />
-            <element signature="e#4418#4419#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/flomio/flojackexample/FJNFCService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="192" column="0" selection-start="8520" selection-end="8520" vertical-scroll-proportion="0.6420233" vertical-offset="2445" max-vertical-offset="6930">
+        <state line="225" column="0" selection-start="9787" selection-end="9787" vertical-scroll-proportion="7.2361445" vertical-offset="372" max-vertical-offset="9945">
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="imports" expanded="true" />
-            <element signature="class#uart_state#0;class#FJNFCService#0" expanded="false" />
-            <element signature="method#onStart#0;class#FJNFCService#0" expanded="false" />
-            <element signature="method#onHandleIntent#0;class#FJNFCService#0" expanded="false" />
-            <element signature="method#floJackAUOutputCallback#0;class#FJNFCService#0" expanded="false" />
-            <element signature="e#24845#24904#0" expanded="false" />
-            <element signature="method#getDeviceLogicOneValue#0;class#FJNFCService#0" expanded="false" />
-            <element signature="docComment;method#getDeviceLogicZeroValue#0;class#FJNFCService#0" expanded="false" />
-            <element signature="method#getDeviceLogicZeroValue#0;class#FJNFCService#0" expanded="false" />
-            <marker date="1376593991000" expanded="true" signature="7818:8097" placeholder="..." />
           </folding>
         </state>
       </provider>
