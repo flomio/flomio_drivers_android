@@ -22,7 +22,7 @@ import java.nio.ShortBuffer;
 public class FJNFCService extends IntentService {
     // Basic Audio system constants
     private final static int RATE = 44100;                     // rate at which samples are collected
-    private final static int SAMPLES = 512;                    // number of samples to process at one time
+    private final static int SAMPLES = 1 << 9;                 // number of samples to process at one time
 
     private final static int ZERO_TO_ONE_THRESHOLD = 0;        // threshold used to detect start bit
     private final static int SAMPLESPERBIT = 13;               // (44100 / HIGHFREQ)  // how many samples per UART bit
@@ -66,6 +66,36 @@ public class FJNFCService extends IntentService {
     private int[] messageReceiveBuffer;
     private int messageLength;
     private boolean messageValid;
+
+    // TX vars
+    private short parityTx = 0;
+    private int phase = 0;
+
+    // UART encode
+    private boolean comm_sync_in_progress = false;
+    private byte currentBit = 1;
+    private uart_state encoderState = uart_state.NEXTBIT;
+    private int nextPhaseEnc = SAMPLESPERBIT;
+    private int phaseEnc = 0;
+    private byte uartByteTx = 0x0;
+    private int uartBitTx = 0;
+    private int uartSyncBitTx = 0;
+    private float[] uartBitEnc = new float[SAMPLESPERBIT];
+
+    // TX vars
+    private uart_state decoderState = uart_state.STARTBIT;
+    private int lastSample = 0;
+    private int lastPhase2 = 0;
+    private int phase2 = 0;
+    private byte sample = 0;
+
+    // UART decoding
+    private int bitNum = 0;
+    private boolean parityGood = false;
+    private byte parityRx = 0;
+    private byte uartByte = 0;
+    private float sample_avg_low = 0;
+    private float sample_avg_high = 0;
 
     private enum uart_state {
         STARTBIT,               //(0)
@@ -115,7 +145,7 @@ public class FJNFCService extends IntentService {
         // is to allow for small chunks of the input samples to be processed while the others
         // continue to be created.  This approach allows for the FJNFCService thread to not
         // hog all the processing time and make the UI Threads unresponsive.
-        int recBufferSize = 4 * AudioRecord.getMinBufferSize(RATE, AudioFormat.CHANNEL_IN_MONO,
+        int recBufferSize = AudioRecord.getMinBufferSize(RATE, AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT);
         if (SAMPLES > recBufferSize) {
             Log.e(LOG_TAG, "your SAMPLES size is too large for the recorded audio buffer.");
@@ -185,20 +215,6 @@ public class FJNFCService extends IntentService {
     }
 
     private void floJackAUInputCallback(ShortBuffer inData) {
-        // TX vars
-        uart_state decoderState = uart_state.STARTBIT;
-        int lastSample = 0;
-        int lastPhase2 = 0;
-        int phase2 = 0;
-        int sample = 0;
-
-        // UART decoding
-        int bitNum = 0;
-        boolean parityGood = false;
-        byte parityRx = 0;
-        byte uartByte = 0;
-        float sample_avg_low = 0;
-        float sample_avg_high = 0;
 
         /************************************
          * UART Decoding
@@ -223,15 +239,9 @@ public class FJNFCService extends IntentService {
                 int diff = phase2 - lastPhase2;
                 switch (decoderState) {
                     case STARTBIT:
-                        Intent i = new Intent();
-                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        i.setAction("com.restock.serialmagic.gears.action.SCAN");
-                        i.putExtra("scan","01020304050607");
-                        startActivity(i);
-
                         if (lastSample == 0 && sample == 1) {
                             // low->high transition. Now wait for a long period
-                            decoderState = uart_state.DECODE_BYTE_SAMPLE;
+                            decoderState = uart_state.STARTBIT_FALL;
                         }
                         break;
                     case STARTBIT_FALL:
@@ -245,7 +255,7 @@ public class FJNFCService extends IntentService {
                         }
                         else {
                             // looks like we didn't
-                            decoderState = uart_state.DECODE_BYTE_SAMPLE;
+                            decoderState = uart_state.STARTBIT;
                         }
                         break;
                     case DECODE_BYTE_SAMPLE:
@@ -254,7 +264,7 @@ public class FJNFCService extends IntentService {
                             if (bitNum < 8) {
                                 // Sample is part of the byte
                                 //Log.d(LOG_TAG, String.format("Bit %d value %ld diff %ld parity %d\n", bitNum, sample, diff, parityRx & 0x01));
-                                uartByte = (byte)((uartByte >> 1) | (sample << 7));
+                                uartByte = (byte)(((uartByte >> 1)&0x7F) + (sample << 7));
                                 bitNum += 1;
                                 parityRx += sample;
                             }
@@ -321,21 +331,6 @@ public class FJNFCService extends IntentService {
     }
 
     private void floJackAUOutputCallback(ShortBuffer outData) {
-        // TX vars
-        short parityTx = 0;
-        int phase = 0;
-
-        // UART encode
-        boolean comm_sync_in_progress = false;
-        byte currentBit = 1;
-        uart_state encoderState = uart_state.NEXTBIT;
-        int nextPhaseEnc = SAMPLESPERBIT;
-        int phaseEnc = 0;
-        byte uartByteTx = 0x0;
-        int uartBitTx = 0;
-        int uartSyncBitTx = 0;
-        float[] uartBitEnc = new float[SAMPLESPERBIT];
-
 
         if (muteEnabled == false) {
             /*******************************
@@ -453,6 +448,14 @@ public class FJNFCService extends IntentService {
     }
 
     private void handleReceivedByte(byte myByte, boolean parityGood, long timestamp) {
+
+        // Prepare Intent to broadcast
+        Intent i = new Intent();
+        i.setAction("com.restock.serialmagic.gears.action.SCAN");
+        i.putExtra("scan",String.format("%s",myByte));
+        sendBroadcast(i);
+
+        return;
 //        /*
 //         *  ERROR CHECKING
 //         */
