@@ -22,7 +22,7 @@ import java.nio.ShortBuffer;
 public class FJNFCService extends IntentService {
     // Basic Audio system constants
     private final static int RATE = 44100;                     // rate at which samples are collected
-    private final static int SAMPLES = 1 << 9;                 // number of samples to process at one time
+    private final static int SAMPLES = 1 << 10;                 // number of samples to process at one time
 
     private final static int ZERO_TO_ONE_THRESHOLD = 0;        // threshold used to detect start bit
     private final static int SAMPLESPERBIT = 13;               // (44100 / HIGHFREQ)  // how many samples per UART bit
@@ -32,8 +32,8 @@ public class FJNFCService extends IntentService {
     private final static float LOWFREQ = (HIGHFREQ / 2);
     private final static int NUMSTOPBITS = 20;                 // number of stop bits to send before sending next value.
     private final static int NUMSYNCBITS = 4;                  // number of ones to send before sending first value.
-    private final static int SAMPLE_NOISE_CEILING = 10000;    // keeping running average and filter out noisy values around 0
-    private final static int SAMPLE_NOISE_FLOOR = -10000;     // keeping running average and filter out noisy values around 0
+    private final static int SAMPLE_NOISE_CEILING = 2000;    // keeping running average and filter out noisy values around 0
+    private final static int SAMPLE_NOISE_FLOOR = -2000;     // keeping running average and filter out noisy values around 0
     private final static double MESSAGE_SYNC_TIMEOUT = 0.500;  // seconds
 
     // Message Length Boundaries
@@ -188,7 +188,6 @@ public class FJNFCService extends IntentService {
             android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 
             while (!Thread.interrupted()) {
-                int offset = 0;
 //                timeTracker = System.currentTimeMillis();
 //                if (remoteOutputUnit.write(outAudioData.array(), 0, SAMPLES) < SAMPLES) {
 //                    Log.e(LOG_TAG, "we didn't write enough samples to playback audio buffer.");
@@ -198,14 +197,14 @@ public class FJNFCService extends IntentService {
 //                processingTime = (System.currentTimeMillis() - timeTracker);
 //                Log.d(LOG_TAG, String.format("played samples in %dms", processingTime));
 
-                timeTracker = System.currentTimeMillis();
+//                timeTracker = System.currentTimeMillis();
                 if (remoteInputUnit.read(inAudioData.array(), 0, SAMPLES) < SAMPLES) {
                     Log.e(LOG_TAG, "we didn't read enough samples from recorded audio buffer.");
                     break;
                 }
                 floJackAUInputCallback(inAudioData);
-                processingTime = (System.currentTimeMillis()-timeTracker);
-                Log.d(LOG_TAG, String.format("processed samples in %dms", processingTime));
+//                processingTime = (System.currentTimeMillis()-timeTracker);
+//                Log.d(LOG_TAG, String.format("processed samples in %dms", processingTime));
             }
             remoteOutputUnit.stop();     // stop playing date out
             remoteInputUnit.stop();      // stop sampling data in
@@ -221,8 +220,10 @@ public class FJNFCService extends IntentService {
          ************************************/
         for (int frameIndex = 0; frameIndex<inData.capacity(); frameIndex++) {
             float raw_sample = inData.get(frameIndex);
-            Log.d(LOG_TAG, String.format("%8d, %8.0f %s\n", phase2, raw_sample,
-                    (decoderState==uart_state.DECODE_BYTE_SAMPLE)?"Decode"+frameIndex:""));
+            if ((frameIndex < 20 && frameIndex > 80) || (decoderState==uart_state.DECODE_BYTE_SAMPLE)) {
+                Log.d(LOG_TAG, String.format("%8d, %8.0f %s\n", phase2, raw_sample,
+                        (decoderState==uart_state.DECODE_BYTE_SAMPLE)?"Decode"+frameIndex:""));
+            }
 
             phase2 += 1;
             if (raw_sample < ZERO_TO_ONE_THRESHOLD) {
@@ -297,6 +298,8 @@ public class FJNFCService extends IntentService {
 //                                    }
 //                                    Log.i(LOG_TAG,String.format("%f\n", raw_sample));
 //                                }
+                                    // Send byte to message handler
+                                    handleReceivedByte(uartByte, parityGood, System.currentTimeMillis());
                                 }
                                 else {
                                     // Invalid byte
@@ -304,8 +307,6 @@ public class FJNFCService extends IntentService {
                                     parityGood = false;
                                 }
 
-                                // Send byte to message handler
-                                handleReceivedByte(uartByte, parityGood, System.currentTimeMillis());
                                 decoderState = uart_state.STARTBIT;
                             }
                         }
