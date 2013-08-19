@@ -220,9 +220,9 @@ public class FJNFCService extends IntentService {
          ************************************/
         for (int frameIndex = 0; frameIndex<inData.capacity(); frameIndex++) {
             float raw_sample = inData.get(frameIndex);
-            if ((frameIndex < 20 && frameIndex > 80) || (decoderState==uart_state.DECODE_BYTE_SAMPLE)) {
+            if (decoderState==uart_state.DECODE_BYTE_SAMPLE) {
                 Log.d(LOG_TAG, String.format("%8d, %8.0f %s\n", phase2, raw_sample,
-                        (decoderState==uart_state.DECODE_BYTE_SAMPLE)?"Decode"+frameIndex:""));
+                        "Decode "+frameIndex));
             }
 
             phase2 += 1;
