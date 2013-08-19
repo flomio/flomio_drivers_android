@@ -581,7 +581,7 @@ public class FJNFCService extends IntentService {
         byte logicOneValue = 1;
 
         // Device exceptions
-        if (machineName.equalsIgnoreCase("Samsung Galaxy Note10.1")) {
+        if (machineName.equalsIgnoreCase("SCH-I925")) {
             logicOneValue = 0;
         }
 
