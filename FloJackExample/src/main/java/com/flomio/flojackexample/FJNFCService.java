@@ -17,6 +17,7 @@ import android.os.Build;
 import android.util.FloatMath;
 import android.util.Log;
 
+import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 
 public class FJNFCService extends IntentService {
@@ -24,22 +25,40 @@ public class FJNFCService extends IntentService {
     private final static int RATE = 44100;                     // rate at which samples are collected
     private final static int SAMPLES = 1 << 10;                 // number of samples to process at one time
 
-    private final static int ZERO_TO_ONE_THRESHOLD = 0;        // threshold used to detect start bit
-    private final static int SAMPLESPERBIT = 13;               // (44100 / HIGHFREQ)  // how many samples per UART bit
+    private final static int ZERO_TO_ONE_THRESHOLD = 0;         // threshold used to detect start bit
+    private final static int SAMPLESPERBIT = 13;                // (44100 / HIGHFREQ)  // how many samples per UART bit
     private final static int SHORT =  (SAMPLESPERBIT/2 + SAMPLESPERBIT/4);
     private final static int LONG =  (SAMPLESPERBIT + SAMPLESPERBIT/2);
-    private final static float HIGHFREQ = 3392;                // baud rate. best to take a divisible number for 44.1kS/s
+    private final static float HIGHFREQ = 3392;                 // baud rate. best to take a divisible number for 44.1kS/s
     private final static float LOWFREQ = (HIGHFREQ / 2);
-    private final static int NUMSTOPBITS = 20;                 // number of stop bits to send before sending next value.
-    private final static int NUMSYNCBITS = 4;                  // number of ones to send before sending first value.
-    private final static int SAMPLE_NOISE_CEILING = 2000;    // keeping running average and filter out noisy values around 0
-    private final static int SAMPLE_NOISE_FLOOR = -2000;     // keeping running average and filter out noisy values around 0
-    private final static double MESSAGE_SYNC_TIMEOUT = 0.500;  // seconds
+    private final static int NUMSTOPBITS = 20;                  // number of stop bits to send before sending next value.
+    private final static int NUMSYNCBITS = 4;                   // number of ones to send before sending first value.
+    private final static int SAMPLE_NOISE_CEILING = 4000;       // keeping running average and filter out noisy values around 0
+    private final static int SAMPLE_NOISE_FLOOR = -4000;        // keeping running average and filter out noisy values around 0
+    private final static long MESSAGE_SYNC_TIMEOUT = 500;    // milliseconds
 
     // Message Length Boundaries
     private final static int MIN_MESSAGE_LENGTH = 3;   //TODO: change to 4
     private final static int MAX_MESSAGE_LENGTH = 255;
     private final static int CORRECT_CRC_VALUE = 0;
+    // Message Protocol
+    private final static int FLOJACK_MESSAGE_OPCODE_POSITION =          0;
+    private final static int FLOJACK_MESSAGE_LENGTH_POSITION =          1;
+    private final static int FLOJACK_MESSAGE_SUB_OPCODE_POSITION =      2;
+    private final static int FLOJACK_MESSAGE_ENABLE_POSITION =          3;
+
+    private final static int FJ_TAG_UID_DATA_POS =                      3;
+    private final static int FJ_BLOCK_RW_MSG_DATA_LENGTH_POS =          4;
+    private final static int FJ_BLOCK_RW_MSG_DATA_POS =                 5;
+
+    private final static int FLOJACK_MESSAGE_OPCODE_LENGTH =            1;
+    private final static int FLOJACK_MESSAGE_LENGTH_LENGTH =            1;
+    private final static int FLOJACK_MESSAGE_SUB_OPCODE_LENGTH =        1;
+    private final static int FLOJACK_MESSAGE_ENABLE_LENGTH =            1;
+    private final static int FLOJACK_MESSAGE_CRC_LENGTH =               1;
+
+    private final static int FJ_BLOCK_RW_MSG_DATA_LENGTH_LEN =          1;
+    private final static int FJ_BLOCK_RW_MSG_DATA_LEN =                 1;
 
     // Audio Unit attributes
     private AudioRecord remoteInputUnit;
@@ -61,9 +80,9 @@ public class FJNFCService extends IntentService {
     private boolean muteEnabled;
 
     // Message handling variables
-    private double lastByteReceivedAtTime;
+    private long lastByteReceivedAtTime;
     private byte messageCRC;
-    private int[] messageReceiveBuffer;
+    private ByteBuffer messageReceiveBuffer;
     private int messageLength;
     private boolean messageValid;
 
@@ -119,6 +138,9 @@ public class FJNFCService extends IntentService {
         currentlySendingMessage = false; // TODO: toggle flag in send(byte) queuing system
         byteForTX = (byte) 0xAA;  // TODO: put send(byte) queuing system in place (use Handler?)
         outputAmplitude = (1<<24);  // TODO: create accessor for setting normal and high amplitude
+
+        messageReceiveBuffer = ByteBuffer.allocate(MAX_MESSAGE_LENGTH);
+        lastByteReceivedAtTime = (long) System.currentTimeMillis();
     }
 
     @Override
@@ -193,7 +215,7 @@ public class FJNFCService extends IntentService {
 //                    Log.e(LOG_TAG, "we didn't write enough samples to playback audio buffer.");
 //                    break;
 //                }
-//                floJackAUOutputCallback(outAudioData);
+//                flojackAUOutputCallback(outAudioData);
 //                processingTime = (System.currentTimeMillis() - timeTracker);
 //                Log.d(LOG_TAG, String.format("played samples in %dms", processingTime));
 
@@ -202,7 +224,7 @@ public class FJNFCService extends IntentService {
                     Log.e(LOG_TAG, "we didn't read enough samples from recorded audio buffer.");
                     break;
                 }
-                floJackAUInputCallback(inAudioData);
+                flojackAUInputCallback(inAudioData);
 //                processingTime = (System.currentTimeMillis()-timeTracker);
 //                Log.d(LOG_TAG, String.format("processed samples in %dms", processingTime));
             }
@@ -213,17 +235,17 @@ public class FJNFCService extends IntentService {
         }
     }
 
-    private void floJackAUInputCallback(ShortBuffer inData) {
+    private void flojackAUInputCallback(ShortBuffer inData) {
 
         /************************************
          * UART Decoding
          ************************************/
         for (int frameIndex = 0; frameIndex<inData.capacity(); frameIndex++) {
             float raw_sample = inData.get(frameIndex);
-            if (decoderState==uart_state.DECODE_BYTE_SAMPLE) {
-                Log.d(LOG_TAG, String.format("%8d, %8.0f %s\n", phase2, raw_sample,
-                        "Decode "+frameIndex));
-            }
+//            if (decoderState==uart_state.DECODE_BYTE_SAMPLE) {
+//                Log.d(LOG_TAG, String.format("%8d, %8.0f %s\n", phase2, raw_sample,
+//                        "Decode "+frameIndex));
+//            }
 
             phase2 += 1;
             if (raw_sample < ZERO_TO_ONE_THRESHOLD) {
@@ -264,7 +286,6 @@ public class FJNFCService extends IntentService {
                             // We have a valid sample.
                             if (bitNum < 8) {
                                 // Sample is part of the byte
-                                //Log.d(LOG_TAG, String.format("Bit %d value %ld diff %ld parity %d\n", bitNum, sample, diff, parityRx & 0x01));
                                 uartByte = (byte)(((uartByte >> 1)&0x7F) + (sample << 7));
                                 bitNum += 1;
                                 parityRx += sample;
@@ -273,13 +294,11 @@ public class FJNFCService extends IntentService {
                                 // Sample is a parity bit
                                 if(sample != (parityRx & 0x01)) {
                                     Log.d(LOG_TAG, String.format(" -- parity %d,  UartByte 0x%x\n", sample, uartByte));
-                                    //decoderState = STARTBIT;
                                     parityGood = false;
                                     bitNum += 1;
                                 }
                                 else {
                                     Log.d(LOG_TAG, String.format(" ++ UartByte: 0x%x\n", uartByte));
-                                    //Log.d(LOG_TAG, String.format(" +++ good parity: %d \n", sample));
                                     parityGood = true;
                                     bitNum += 1;
                                 }
@@ -288,16 +307,7 @@ public class FJNFCService extends IntentService {
                                 // Sample is stop bit
                                 if (sample == 1) {
                                     // Valid byte
-                                    //Log.d(LOG_TAG, String.format(" +++ stop bit: %d \n", sample));
-//                                if(frameIndex > (80))
-//                                {
-//                                    //Log.d(LOG_TAG, String.format("%f\n", raw_sample));
-//                                    for(int k=frameIndex-80; k<256; k++)
-//                                    {
-//                                        Log.i(LOG_TAG,String.format("%d\n", inData[k]));
-//                                    }
-//                                    Log.i(LOG_TAG,String.format("%f\n", raw_sample));
-//                                }
+                                    Log.d(LOG_TAG, String.format(" +++ stop bit: %d \n", sample));
                                     // Send byte to message handler
                                     handleReceivedByte(uartByte, parityGood, System.currentTimeMillis());
                                 }
@@ -306,7 +316,6 @@ public class FJNFCService extends IntentService {
                                     Log.d(LOG_TAG, String.format(" -- StopBit: %d UartByte 0x%x\n", sample, uartByte));
                                     parityGood = false;
                                 }
-
                                 decoderState = uart_state.STARTBIT;
                             }
                         }
@@ -331,7 +340,7 @@ public class FJNFCService extends IntentService {
         return;
     }
 
-    private void floJackAUOutputCallback(ShortBuffer outData) {
+    private void flojackAUOutputCallback(ShortBuffer outData) {
 
         if (muteEnabled == false) {
             /*******************************
@@ -449,98 +458,123 @@ public class FJNFCService extends IntentService {
     }
 
     private void handleReceivedByte(byte myByte, boolean parityGood, long timestamp) {
-
-        // Prepare Intent to broadcast
+        // Prepare the notification intent
         Intent i = new Intent();
         i.setAction("com.restock.serialmagic.gears.action.SCAN");
-        i.putExtra("scan",String.format("%s",myByte));
-        sendBroadcast(i);
 
-        return;
-//        /*
-//         *  ERROR CHECKING
-//         */
-//        // Before anything else carry out error handling
-//        if (!parityGood) {
-//            // last byte was corrupted, dump this entire message
-//            Log.d(LOG_TAG," --- Parity Bad: dumping message.");
-//            markCurrentMessageCorruptAndClearBufferAtTime(timestamp);
-//            return;
-//        }
-//        else if (!messageValid & !(timestamp - lastByteReceivedAtTime >= MESSAGE_SYNC_TIMEOUT)) {
-//            // byte is ok but we're still receiving a corrupt message, dump it.
-//            Log.d(LOG_TAG,String.format(" --- Message Invalid: dumping message (timeout: %f)", (timestamp - lastByteReceivedAtTime)));
-//            markCurrentMessageCorruptAndClearBufferAtTime(timestamp);
-//            return;
-//        }
-//        else if (timestamp - lastByteReceivedAtTime >= MESSAGE_SYNC_TIMEOUT) {
-//            // sweet! timeout has passed, let's get cranking on this valid message
-//            if (messageReceiveBuffer.length > 0) {
-//                Log.d(LOG_TAG,String.format("Timeout reached. Dumping previous buffer. \n_messageReceiveBuffer:%@ \n_messageReceiveBuffer.length:%d", messageReceiveBuffer.toString(), messageReceiveBuffer.length));
-//
-////                if([_delegate respondsToSelector:@selector(nfcService: didHaveError:)]) {
-////                    dispatch_async(_backgroundQueue, ^(void) {
-////                            [_delegate nfcService:self didHaveError:FLOMIO_STATUS_MESSAGE_CORRUPT_ERROR];
-////                    });
-////                }
-//            }
-//
-//            Log.d(LOG_TAG,String.format(" ++ Message Valid: byte is part of a new message (timeout: %f)", (timestamp - lastByteReceivedAtTime)));
-//            markCurrentMessageValidAtTime(timestamp);
-//            clearMessageBuffer();
-//        }
-//
-//        /*
-//         *  BUFFER BUILDER
-//         */
-//        markCurrentMessageValidAtTime(timestamp);
-////        messageReceiveBuffer(myByte, 1);
-//        messageCRC ^= myByte;
-//
-//        // Have we received the message length yet ?
-//        if (messageReceiveBuffer.length == 2) {
-//            byte length = 0;
-////            messageReceiveBuffer(length);
-////            range:NSMakeRange(FLOJACK_MESSAGE_LENGTH_POSITION,
-////                    FLOJACK_MESSAGE_LENGTH_POSITION)];
-//            messageLength = length;
-//            if (messageLength < MIN_MESSAGE_LENGTH || messageLength > MAX_MESSAGE_LENGTH)
-//            {
-//                Log.d(LOG_TAG,String.format("Invalid message length, ingoring current message."));
-//                markCurrentMessageCorruptAndClearBufferAtTime(timestamp);
-//            }
-//        }
-//
-//        // Is the message complete?
-//        if (messageReceiveBuffer.length == messageLength
-//                && messageReceiveBuffer.length > MIN_MESSAGE_LENGTH) {
-//            // Check CRC
-//            if (messageCRC == CORRECT_CRC_VALUE) {
-//                // Well formed message received, pass it to the delegate
-//                Log.d(LOG_TAG,String.format("FJNFCService: Complete message, send to delegate."));
-//
-////                if([_delegate respondsToSelector:@selector(nfcService: didReceiveMessage:)]) {
-////                    NSData *dataCopy = [[NSData alloc] initWithData:_messageReceiveBuffer];
-////                    dispatch_async(_backgroundQueue, ^(void) {
-////                            [_delegate nfcService:self didReceiveMessage:dataCopy];
-////                    });
-////                }
-//
-//                markCurrentMessageValidAtTime(timestamp);
-//                clearMessageBuffer();
-//            }
-//            else {
-//                //TODO: plumb this through to delegate
-//                Log.d(LOG_TAG,String.format("Bad CRC, ingoring current message."));
-//                markCurrentMessageCorruptAndClearBufferAtTime(timestamp);
-//            }
-//        }
+        /*
+         *  ERROR CHECKING
+         */
+        // Before anything else carry out error handling
+        if (!parityGood) {
+            // last byte was corrupted, dump this entire message
+            Log.d(LOG_TAG," --- Parity Bad: dumping message.");
+            markCurrentMessageCorruptAndClearBufferAtTime(timestamp);
+            return;
+        }
+        else if (!messageValid & !(timestamp - lastByteReceivedAtTime >= MESSAGE_SYNC_TIMEOUT)) {
+            // byte is ok but we're still receiving a corrupt message, dump it.
+            Log.d(LOG_TAG,String.format(" --- Message Invalid: dumping message (timeout: %d)", (timestamp - lastByteReceivedAtTime)));
+            markCurrentMessageCorruptAndClearBufferAtTime(timestamp);
+            return;
+        }
+        else if (timestamp - lastByteReceivedAtTime >= MESSAGE_SYNC_TIMEOUT) {
+            // sweet! timeout has passed, let's get cranking on this valid message
+            if (messageReceiveBuffer.position() > 0) {
+                Log.d(LOG_TAG,String.format("Timeout reached. Dumping previous buffer. \nmessageReceiveBuffer:%s \nmessageReceiveBuffer.length:%d", messageReceiveBuffer.toString(), messageReceiveBuffer.position()));
+                // Prepare Intent to broadcast
+                i.putExtra("scan",String.format("Error: message corrupt, timeout reached @ %d ms", (timestamp - lastByteReceivedAtTime)));
+                sendBroadcast(i);
+            }
+
+            Log.d(LOG_TAG,String.format(" ++ Message Valid: byte is part of a new message (timeout: %d)", (timestamp - lastByteReceivedAtTime)));
+            markCurrentMessageValidAtTime(timestamp);
+            clearMessageBuffer();
+        }
+
+        /*
+         *  BUFFER BUILDER
+         */
+        markCurrentMessageValidAtTime(timestamp);
+        messageReceiveBuffer.put(myByte);
+        messageCRC ^= myByte;
+
+        // Have we received the message length yet?
+        if (messageReceiveBuffer.position() == FLOJACK_MESSAGE_LENGTH_POSITION+FLOJACK_MESSAGE_LENGTH_LENGTH) {
+            messageLength = messageReceiveBuffer.get(FLOJACK_MESSAGE_LENGTH_POSITION); // TODO: Check this is not a bug, position is 2 for length? 2's compliment?
+            if (messageLength < MIN_MESSAGE_LENGTH || messageLength > MAX_MESSAGE_LENGTH)
+            {
+                Log.d(LOG_TAG,String.format("Invalid message length, ignoring current message."));
+                markCurrentMessageCorruptAndClearBufferAtTime(timestamp);
+            }
+        }
+
+        // Is the message complete?
+        if (messageReceiveBuffer.position() == messageLength
+                && messageReceiveBuffer.position() > MIN_MESSAGE_LENGTH) {
+            // Check CRC
+            if (messageCRC == CORRECT_CRC_VALUE) {
+                // Well formed message received, pass it to the delegate
+                Log.d(LOG_TAG,String.format("FJNFCService: Complete message, send to delegate."));
+                messageReceiveBuffer.flip();
+                messageReceiveBuffer.position(3);
+                byte[] tmp = new byte[messageReceiveBuffer.limit()-4];
+                messageReceiveBuffer.get(tmp, 0, tmp.length);
+                i.putExtra("scan",String.format("UUID: 0x%s",bytesToHex(tmp)));
+                sendBroadcast(i);
+
+                markCurrentMessageValidAtTime(timestamp);
+                clearMessageBuffer();
+            }
+            else {
+                //TODO: plumb this through to delegate
+                Log.d(LOG_TAG,String.format("Bad CRC, ignoring current message."));
+                markCurrentMessageCorruptAndClearBufferAtTime(timestamp);
+            }
+        }
+    }
+
+    private void clearMessageBuffer() {
+        messageReceiveBuffer.clear();
+        messageLength = MAX_MESSAGE_LENGTH;
+        messageCRC = 0;
+    }
+/**
+ Mark the current message corrupt and clear the receive buffer.
+
+ @param timestamp       Time when message was marked valid and buffer cleared
+ @return void
+ */
+    private void markCurrentMessageCorruptAndClearBufferAtTime(long timestamp) {
+        markCurrentMessageCorruptAtTime(timestamp);
+        clearMessageBuffer();
+    }
+
+/**
+ Mark the current message invalid and timestamp.
+ The message receive buffer will be flushed after transmission
+ completes.
+
+ @param timestamp       Time when message was marked corrupt
+ @return void
+ */
+    private void markCurrentMessageCorruptAtTime(long timestamp) {
+        lastByteReceivedAtTime = timestamp;
+        messageValid = false;
+    }
+
+/**
+ Mark the current message valid and capture the timestamp.
+
+ @param timestamp       Time when message was marked valid
+ @return void
+ */
+    private void markCurrentMessageValidAtTime(long timestamp) {
+        lastByteReceivedAtTime = timestamp;
+        messageValid = true;
     }
 
 //    private void sendFloJackConnectedStatusToDelegate() {
-//
-//    }
-//    private void clearMessageBuffer() {
 //
 //    }
 //    private void checkIfVolumeLevelMaxAndNotifyDelegate() {
@@ -603,47 +637,16 @@ public class FJNFCService extends IntentService {
             return 1;
     }
 
-    /**
-     Mark the current message corrupt and clear the receive buffer.
-
-     @param timestamp       Time when message was marked valid and buffer cleared
-     @return void
-     */
-    public void markCurrentMessageCorruptAndClearBufferAtTime(long timestamp) {
-        markCurrentMessageCorruptAtTime(timestamp);
-        clearMessageBuffer();
+    final protected static char[] hexArray = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
+    public static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        int v;
+        for ( int j = 0; j < bytes.length; j++ ) {
+            v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
     }
-
-    /**
-     Mark the current message invalid and timestamp.
-     The message receive buffer will be flushed after transmission
-     completes.
-
-     @param timestamp       Time when message was marked corrupt
-     @return void
-     */
-    public void markCurrentMessageCorruptAtTime(long timestamp) {
-        lastByteReceivedAtTime = timestamp;
-        messageValid = false;
-    }
-
-    /**
-     Mark the current message valid and capture the timestamp.
-
-     @param timestamp       Time when message was marked valid
-     @return void
-     */
-    public void markCurrentMessageValidAtTime(long timestamp) {
-        lastByteReceivedAtTime = timestamp;
-        messageValid = true;
-    }
-
-    public void clearMessageBuffer() {
-//        messageReceiveBuffer = 0;
-        messageLength  = MAX_MESSAGE_LENGTH;
-        messageCRC = 0;
-    }
-
-
 }
 
