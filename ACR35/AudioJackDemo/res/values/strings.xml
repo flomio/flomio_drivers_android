@@ -97,7 +97,9 @@
     <string name="cancel">Cancel</string>
     <string name="error">Error</string>
     <string name="info">Information</string>
-    <string name="message_track_data_error_corrupted">The track data may be corrupted. Please swipe the card again!</string>
+    <string name="message_track_data_error_corrupted">The track 1 and track 2 data may be corrupted. Please swipe the card again!</string>
+    <string name="message_track1_data_error_corrupted">The track 1 data may be corrupted. Please swipe the card again!</string>
+    <string name="message_track2_data_error_corrupted">The track 2 data may be corrupted. Please swipe the card again!</string>
     <string name="message_track_data_error_decrypted">The track data cannot be decrypted. Please swipe the card again!</string>
     <string name="message_track_data_error_checksum">The track data contains checksum error. Please swipe the card again!</string>
     <string name="message_track_data_error_ksn">The key serial number does not match with the settings.</string>

@@ -24,8 +24,8 @@ To install the library to your development environment, see the section
 Release Notes
 -------------
 
-Version:      1.0.0 Preview 12
-Release Date: 15/5/2014
+Version:      1.0.0 Preview 13
+Release Date: 4/9/2014
 
 This preview library is subject to change. It may or may not work with your
 Android device.
@@ -36,7 +36,7 @@ System Requirements
 
 Development Environment
 
-- ADT r22.3 or above.
+- ADT r23.0.2 or above.
 - ADT Bundle is recommended. See Android Developers [1] for more information.
 
 [1] http://developer.android.com/
@@ -68,6 +68,13 @@ History
 -------
 
 Library
+
+v1.0.0 Preview 13 (4/9/2014)
+- Add the following interfaces to AudioJackReader class:
+  OnTrackDataNotificationListener
+- Add the following methods to AudioJackReader class:
+  setOnTrackDataNotificationListener()
+- Target to Android 4.4W platform.
 
 v1.0.0 Preview 12 (15/5/2014)
 - Remove the limitation of command length in transmit() and control() methods of
@@ -239,6 +246,11 @@ v1.0.0 Preview 1 (25/3/2013)
 
 Demo
 
+v1.0.0 Preview 10 (4/9/2014)
+- Show each track error and continue to show the track data.
+- Show the progress of processing the track data.
+- Target to Android 4.4W platform.
+
 v1.0.0 Preview 9 (28/3/2014)
 - Show the track data if key is null.
 
@@ -301,7 +313,7 @@ File Contents
 API Documentation:  AudioJack\doc
 Sample Application: AudioJackDemo
 Android Package:    AudioJackDemo.apk
-Class Library:      AudioJackDemo\libs\acsaudiojack-1.0.0preview12.jar
+Class Library:      AudioJackDemo\libs\acsaudiojack-1.0.0preview13.jar
 
 
 

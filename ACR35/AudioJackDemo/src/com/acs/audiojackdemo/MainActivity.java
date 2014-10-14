@@ -12,6 +12,8 @@ package com.acs.audiojackdemo;
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -2429,6 +2431,39 @@ public class MainActivity extends PreferenceActivity {
         }
     }
 
+    private class OnTrackDataNotificationListener implements
+            AudioJackReader.OnTrackDataNotificationListener {
+
+        private Timer mTimer;
+
+        @Override
+        public void onTrackDataNotification(AudioJackReader reader) {
+
+            /* Show the progress. */
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    mProgress.setMessage("Processing the track data...");
+                    mProgress.show();
+                }
+            });
+
+            /* Dismiss the progress after 5 seconds. */
+            mTimer = new Timer();
+            mTimer.schedule(new TimerTask() {
+
+                @Override
+                public void run() {
+
+                    mProgress.dismiss();
+                    mTimer.cancel();
+                }
+            }, 5000);
+        }
+    }
+
     private class OnTrackDataAvailableListener implements
             AudioJackReader.OnTrackDataAvailableListener {
 
@@ -2440,6 +2475,7 @@ public class MainActivity extends PreferenceActivity {
         private String mTrack2MacString;
         private String mBatteryStatusString;
         private String mKeySerialNumberString;
+        private int mErrorId;
 
         @Override
         public void onTrackDataAvailable(AudioJackReader reader,
@@ -2455,22 +2491,35 @@ public class MainActivity extends PreferenceActivity {
                     .getBatteryStatus());
             mKeySerialNumberString = "";
 
+            /* Hide the progress. */
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    mProgress.dismiss();
+                };
+            });
+
+            if ((trackData.getTrack1ErrorCode() != TrackData.TRACK_ERROR_SUCCESS)
+                    && (trackData.getTrack2ErrorCode() != TrackData.TRACK_ERROR_SUCCESS)) {
+                mErrorId = R.string.message_track_data_error_corrupted;
+            } else if (trackData.getTrack1ErrorCode() != TrackData.TRACK_ERROR_SUCCESS) {
+                mErrorId = R.string.message_track1_data_error_corrupted;
+            } else if (trackData.getTrack2ErrorCode() != TrackData.TRACK_ERROR_SUCCESS) {
+                mErrorId = R.string.message_track2_data_error_corrupted;
+            }
+
             /* Show the track error. */
-            if ((trackData.getTrack1ErrorCode() != 0)
-                    || (trackData.getTrack2ErrorCode() != 0)) {
+            if ((trackData.getTrack1ErrorCode() != TrackData.TRACK_ERROR_SUCCESS)
+                    || (trackData.getTrack2ErrorCode() != TrackData.TRACK_ERROR_SUCCESS)) {
 
                 runOnUiThread(new Runnable() {
 
                     @Override
                     public void run() {
-                        showMessageDialog(R.string.error,
-                                R.string.message_track_data_error_corrupted);
+                        showMessageDialog(R.string.error, mErrorId);
                     }
                 });
-
-                /* Show the track data. */
-                showTrackData();
-                return;
             }
 
             /* Show the track data. */
@@ -3593,6 +3642,9 @@ public class MainActivity extends PreferenceActivity {
 
         /* Set the status callback. */
         mReader.setOnStatusAvailableListener(new OnStatusAvailableListener());
+
+        /* Set the track data notification callback. */
+        mReader.setOnTrackDataNotificationListener(new OnTrackDataNotificationListener());
 
         /* Set the track data callback. */
         mReader.setOnTrackDataAvailableListener(new OnTrackDataAvailableListener());
