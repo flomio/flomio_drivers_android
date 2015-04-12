@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">AJ Demo</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_clear">Clear</string>
+    <string name="action_about">About AJ Demo</string>
+    <string name="version">Version</string>
+    <string name="unknown_version">Unknown version</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="pref_title_device">Device</string>
+    <string name="pref_title_firmware_version">Firmware version</string>
+    <string name="pref_title_status">Status</string>
+    <string name="pref_title_battery_level">Battery level</string>
+    <string name="pref_title_sleep_timeout">Sleep timeout</string>
+    <string name="pref_title_reset">Reset</string>
+    <string name="pref_title_sleep">Sleep</string>
+    <string name="pref_title_swipe_count">Swipe count</string>
+    <string name="pref_title_battery_status">Battery status</string>
+    <string name="pref_title_data_received">Data received</string>
+    <string name="pref_title_key_serial_number">Key serial number</string>
+    <string name="pref_title_track_data">Track data</string>
+    <string name="pref_title_track1_mac">Track 1 - MAC</string>
+    <string name="pref_title_track2_mac">Track 2 - MAC</string>
+    <string name="pref_title_track1">Track 1</string>
+    <string name="pref_title_jis2_data">JIS2 data</string>
+    <string name="pref_title_primary_account_number">Primary account number</string>
+    <string name="pref_title_name">Name</string>
+    <string name="pref_title_expiration_date">Expiration date</string>
+    <string name="pref_title_service_code">Service code</string>
+    <string name="pref_title_discretionary_data">Discretionary data</string>
+    <string name="pref_title_track2">Track 2</string>
+    <string name="pref_title_about_reader">About reader</string>
+    <string name="pref_title_function">Function</string>
+    <string name="pref_title_get_firmware_version">Get firmware version</string>
+    <string name="pref_title_get_status">Get status</string>
+    <string name="pref_title_set_sleep_timeout">Set sleep timeout</string>
+    <string name="pref_title_reader_id">Reader ID</string>
+    <string name="pref_title_custom_id">Custom ID</string>
+    <string name="pref_title_device_id">Device ID</string>
+    <string name="pref_title_get_custom_id">Get custom ID</string>
+    <string name="pref_title_set_custom_id">Set custom ID</string>
+    <string name="pref_title_get_device_id">Get device ID</string>
+    <string name="pref_title_cryptographic_keys">Cryptographic keys</string>
+    <string name="pref_title_new_master_key">New master key</string>
+    <string name="pref_title_master_key">Master key</string>
+    <string name="pref_title_aes_key">AES key</string>
+    <string name="pref_title_set_master_key">Set master key</string>
+    <string name="pref_title_set_aes_key">Set AES key</string>
+    <string name="pref_title_use_default_key">Use default key</string>
+    <string name="pref_title_dukpt_setup">DUKPT setup</string>
+    <string name="pref_title_dukpt">DUKPT</string>
+    <string name="pref_title_iksn">IKSN</string>
+    <string name="pref_title_ipek">IPEK</string>
+    <string name="pref_title_get_dukpt_option">Get DUKPT option</string>
+    <string name="pref_title_set_dukpt_option">Set DUKPT option</string>
+    <string name="pref_title_initialize_dukpt">Initialize DUKPT</string>
+    <string name="pref_title_use_default_iksn_ipek">Use default IKSN &amp; IPEK</string>
+    <string name="pref_title_track_data_setup">Track data setup</string>
+    <string name="pref_title_encrypted_track1">Encrypted track 1</string>
+    <string name="pref_title_encrypted_track2">Encrypted track 2</string>
+    <string name="pref_title_masked_track1">Masked track 1</string>
+    <string name="pref_title_masked_track2">Masked track 2</string>
+    <string name="pref_title_get_track_data_option">Get track data option</string>
+    <string name="pref_title_set_track_data_option">Set track data option</string>
+    <string name="pref_title_picc">PICC</string>
+    <string name="pref_title_atr">ATR</string>
+    <string name="pref_title_timeout">Timeout</string>
+    <string name="pref_title_card_type">Card type</string>
+    <string name="pref_title_command_apdu">Command APDU</string>
+    <string name="pref_title_response_apdu">Response APDU</string>
+    <string name="pref_title_rf_config">RF configuration</string>
+    <string name="pref_title_power_on">Power ON</string>
+    <string name="pref_title_power_off">Power OFF</string>
+    <string name="pref_title_transmit">Transmit</string>
+    <string name="pref_title_set_rf_config">Set RF configuration</string>
+    <string name="pref_title_icc">ICC</string>
+    <string name="pref_title_power_action">Power action</string>
+
+    <string-array name="power_action">
+        <item>Power down</item>
+        <item>Cold reset</item>
+        <item>Warm reset</item>
+    </string-array>
+
+    <string name="pref_title_wait_timeout">Wait timeout</string>
+    <string name="pref_title_protocol">Protocol</string>
+    <string name="pref_title_t0">T=0</string>
+    <string name="pref_title_t1">T=1</string>
+    <string name="pref_title_active_protocol">Active protocol</string>
+    <string name="pref_title_apdu">APDU</string>
+    <string name="pref_title_power">Power</string>
+    <string name="pref_title_set_protocol">Set protocol</string>
+    <string name="pref_title_device_control">Device control</string>
+    <string name="pref_title_control_code">Control code</string>
+    <string name="pref_title_control_command">Control command</string>
+    <string name="pref_title_control_response">Control response</string>
+    <string name="pref_title_control">Control</string>
+    <string name="pref_title_card_state">Card state</string>
+    <string name="pref_title_update_card_state">Update card state</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="error">Error</string>
+    <string name="info">Information</string>
+    <string name="message_track_data_error_corrupted">The track 1 and track 2 data may be corrupted. Please swipe the card again!</string>
+    <string name="message_track1_data_error_corrupted">The track 1 data may be corrupted. Please swipe the card again!</string>
+    <string name="message_track2_data_error_corrupted">The track 2 data may be corrupted. Please swipe the card again!</string>
+    <string name="message_track_data_error_decrypted">The track data cannot be decrypted. Please swipe the card again!</string>
+    <string name="message_track_data_error_checksum">The track data contains checksum error. Please swipe the card again!</string>
+    <string name="message_track_data_error_ksn">The key serial number does not match with the settings.</string>
+    <string name="message_track_data_error_ec">The encryption counter is invalid.</string>
+    <string name="message_reset_info_volume">In order to reset the reader, please adjust the volume to maximum.</string>
+    <string name="message_new_master_key_error_length">The new master key length is not equal to 16.</string>
+    <string name="message_master_key_error_length">The master key length is not equal to 16.</string>
+    <string name="message_aes_key_error_length">The AES key length is not equal to 16.</string>
+    <string name="message_iksn_error_length">The IKSN length is not equal to 10.</string>
+    <string name="message_ipek_error_length">The IPEK length is not equal to 16.</string>
+    <string name="message_picc_rf_config_error_length">The RF configuration length is not equal to 19.</string>
+    <string name="dialog_message_sleep_timeout">Enter the value between 4 and 20:</string>
+    <string name="dialog_message_custom_id">Enter the text (maximum 10 characters):</string>
+
+</resources>

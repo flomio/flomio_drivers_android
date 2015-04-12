@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory
+        android:key="device"
+        android:title="@string/pref_title_device" >
+        <PreferenceScreen
+            android:key="about_reader"
+            android:title="@string/pref_title_about_reader" >
+            <Preference
+                android:key="about_reader_firmware_version"
+                android:title="@string/pref_title_firmware_version" />
+            <Preference
+                android:key="about_reader_battery_level"
+                android:title="@string/pref_title_battery_level" />
+            <Preference
+                android:key="about_reader_sleep_timeout"
+                android:title="@string/pref_title_sleep_timeout" />
+
+            <PreferenceCategory
+                android:key="about_reader_function"
+                android:title="@string/pref_title_function" >
+                <Preference
+                    android:key="about_reader_get_firmware_version"
+                    android:title="@string/pref_title_get_firmware_version" />
+                <Preference
+                    android:key="about_reader_get_status"
+                    android:title="@string/pref_title_get_status" />
+                <Preference
+                    android:key="about_reader_set_sleep_timeout"
+                    android:title="@string/pref_title_set_sleep_timeout" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:key="reader_id"
+            android:title="@string/pref_title_reader_id" >
+            <Preference
+                android:key="reader_id_custom_id"
+                android:title="@string/pref_title_custom_id" />
+            <Preference
+                android:key="reader_id_device_id"
+                android:title="@string/pref_title_device_id" />
+
+            <PreferenceCategory
+                android:key="reader_id_function"
+                android:title="@string/pref_title_function" >
+                <Preference
+                    android:key="reader_id_get_custom_id"
+                    android:title="@string/pref_title_get_custom_id" />
+                <Preference
+                    android:key="reader_id_set_custom_id"
+                    android:title="@string/pref_title_set_custom_id" />
+                <Preference
+                    android:key="reader_id_get_device_id"
+                    android:title="@string/pref_title_get_device_id" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:key="cryptographic_keys"
+            android:title="@string/pref_title_cryptographic_keys" >
+            <EditTextPreference
+                android:key="cryptographic_keys_new_master_key"
+                android:title="@string/pref_title_new_master_key" />
+            <EditTextPreference
+                android:key="cryptographic_keys_master_key"
+                android:title="@string/pref_title_master_key" />
+            <EditTextPreference
+                android:key="cryptographic_keys_aes_key"
+                android:title="@string/pref_title_aes_key" />
+
+            <PreferenceCategory
+                android:key="cryptographic_keys_function"
+                android:title="@string/pref_title_function" >
+                <Preference
+                    android:key="cryptographic_keys_set_master_key"
+                    android:title="@string/pref_title_set_master_key" />
+                <Preference
+                    android:key="cryptographic_keys_set_aes_key"
+                    android:title="@string/pref_title_set_aes_key" />
+                <Preference
+                    android:key="cryptographic_keys_use_default_key"
+                    android:title="@string/pref_title_use_default_key" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:key="dukpt_setup"
+            android:title="@string/pref_title_dukpt_setup" >
+            <CheckBoxPreference
+                android:key="dukpt_setup_dukpt"
+                android:title="@string/pref_title_dukpt" />
+
+            <EditTextPreference
+                android:key="dukpt_setup_iksn"
+                android:title="@string/pref_title_iksn" />
+            <EditTextPreference
+                android:key="dukpt_setup_ipek"
+                android:title="@string/pref_title_ipek" />
+
+            <PreferenceCategory
+                android:key="dukpt_setup_function"
+                android:title="@string/pref_title_function" >
+                <Preference
+                    android:key="dukpt_setup_get_dukpt_option"
+                    android:title="@string/pref_title_get_dukpt_option" />
+                <Preference
+                    android:key="dukpt_setup_set_dukpt_option"
+                    android:title="@string/pref_title_set_dukpt_option" />
+                <Preference
+                    android:key="dukpt_setup_initialize_dukpt"
+                    android:title="@string/pref_title_initialize_dukpt" />
+                <Preference
+                    android:key="dukpt_setup_use_default_iksn_ipek"
+                    android:title="@string/pref_title_use_default_iksn_ipek" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:key="track_data_setup"
+            android:title="@string/pref_title_track_data_setup" >
+            <CheckBoxPreference
+                android:key="track_data_setup_encrypted_track1"
+                android:title="@string/pref_title_encrypted_track1" />
+            <CheckBoxPreference
+                android:key="track_data_setup_encrypted_track2"
+                android:title="@string/pref_title_encrypted_track2" />
+            <CheckBoxPreference
+                android:key="track_data_setup_masked_track1"
+                android:title="@string/pref_title_masked_track1" />
+            <CheckBoxPreference
+                android:key="track_data_setup_masked_track2"
+                android:title="@string/pref_title_masked_track2" />
+
+            <PreferenceCategory
+                android:key="dukpt_setup_function"
+                android:title="@string/pref_title_function" >
+                <Preference
+                    android:key="track_data_setup_reset"
+                    android:title="@string/pref_title_reset" />
+                <Preference
+                    android:key="track_data_setup_get_track_data_option"
+                    android:title="@string/pref_title_get_track_data_option" />
+                <Preference
+                    android:key="track_data_setup_set_track_data_option"
+                    android:title="@string/pref_title_set_track_data_option" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:key="icc"
+            android:title="@string/pref_title_icc" >
+            <Preference
+                android:key="icc_atr"
+                android:title="@string/pref_title_atr" />
+
+            <ListPreference
+                android:entries="@array/power_action"
+                android:entryValues="@array/power_action"
+                android:key="icc_power_action"
+                android:title="@string/pref_title_power_action" />
+
+            <EditTextPreference
+                android:key="icc_wait_timeout"
+                android:title="@string/pref_title_wait_timeout" />
+
+            <Preference
+                android:key="icc_card_state"
+                android:title="@string/pref_title_card_state" />
+
+            <PreferenceCategory
+                android:key="icc_protocol"
+                android:title="@string/pref_title_protocol" >
+                <CheckBoxPreference
+                    android:defaultValue="true"
+                    android:key="icc_t0"
+                    android:title="@string/pref_title_t0" />
+                <CheckBoxPreference
+                    android:defaultValue="true"
+                    android:key="icc_t1"
+                    android:title="@string/pref_title_t1" />
+
+                <Preference
+                    android:key="icc_active_protocol"
+                    android:title="@string/pref_title_active_protocol" />
+            </PreferenceCategory>
+            <PreferenceCategory
+                android:key="icc_apdu"
+                android:title="@string/pref_title_apdu" >
+                <EditTextPreference
+                    android:key="icc_command_apdu"
+                    android:title="@string/pref_title_command_apdu" />
+
+                <Preference
+                    android:key="icc_response_apdu"
+                    android:title="@string/pref_title_response_apdu" />
+            </PreferenceCategory>
+            <PreferenceCategory
+                android:key="icc_device_control"
+                android:title="@string/pref_title_device_control" >
+                <EditTextPreference
+                    android:key="icc_control_code"
+                    android:title="@string/pref_title_control_code" />
+                <EditTextPreference
+                    android:key="icc_control_command"
+                    android:title="@string/pref_title_control_command" />
+
+                <Preference
+                    android:key="icc_control_response"
+                    android:title="@string/pref_title_control_response" />
+            </PreferenceCategory>
+            <PreferenceCategory
+                android:key="icc_function"
+                android:title="@string/pref_title_function" >
+                <Preference
+                    android:key="icc_reset"
+                    android:title="@string/pref_title_reset" />
+                <Preference
+                    android:key="icc_power"
+                    android:title="@string/pref_title_power" />
+                <Preference
+                    android:key="icc_set_protocol"
+                    android:title="@string/pref_title_set_protocol" />
+                <Preference
+                    android:key="icc_transmit"
+                    android:title="@string/pref_title_transmit" />
+                <Preference
+                    android:key="icc_control"
+                    android:title="@string/pref_title_control" />
+                <Preference
+                    android:key="icc_update_card_state"
+                    android:title="@string/pref_title_update_card_state" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:key="picc"
+            android:title="@string/pref_title_picc" >
+            <Preference
+                android:key="picc_atr"
+                android:title="@string/pref_title_atr" />
+
+            <EditTextPreference
+                android:key="picc_timeout"
+                android:title="@string/pref_title_timeout" />
+            <EditTextPreference
+                android:key="picc_card_type"
+                android:title="@string/pref_title_card_type" />
+            <EditTextPreference
+                android:key="picc_command_apdu"
+                android:title="@string/pref_title_command_apdu" />
+
+            <Preference
+                android:key="picc_response_apdu"
+                android:title="@string/pref_title_response_apdu" />
+
+            <EditTextPreference
+                android:key="picc_rf_config"
+                android:title="@string/pref_title_rf_config" />
+
+            <PreferenceCategory
+                android:key="picc_function"
+                android:title="@string/pref_title_function" >
+                <Preference
+                    android:key="picc_reset"
+                    android:title="@string/pref_title_reset" />
+                <Preference
+                    android:key="picc_power_on"
+                    android:title="@string/pref_title_power_on" />
+                <Preference
+                    android:key="picc_power_off"
+                    android:title="@string/pref_title_power_off" />
+                <Preference
+                    android:key="picc_transmit"
+                    android:title="@string/pref_title_transmit" />
+                <Preference
+                    android:key="picc_set_rf_config"
+                    android:title="@string/pref_title_set_rf_config" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+
+        <Preference
+            android:key="device_reset"
+            android:title="@string/pref_title_reset" />
+        <Preference
+            android:key="device_sleep"
+            android:title="@string/pref_title_sleep" />
+        <Preference
+            android:key="device_data_received"
+            android:title="@string/pref_title_data_received" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="track_data"
+        android:title="@string/pref_title_track_data" >
+        <Preference
+            android:key="track_data_swipe_count"
+            android:title="@string/pref_title_swipe_count" />
+        <Preference
+            android:key="track_data_battery_status"
+            android:title="@string/pref_title_battery_status" />
+        <Preference
+            android:key="track_data_key_serial_number"
+            android:title="@string/pref_title_key_serial_number" />
+        <Preference
+            android:key="track_data_track1_mac"
+            android:title="@string/pref_title_track1_mac" />
+        <Preference
+            android:key="track_data_track2_mac"
+            android:title="@string/pref_title_track2_mac" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="track1"
+        android:title="@string/pref_title_track1" >
+        <Preference
+            android:key="track1_jis2_data"
+            android:title="@string/pref_title_jis2_data" />
+        <Preference
+            android:key="track1_primary_account_number"
+            android:title="@string/pref_title_primary_account_number" />
+        <Preference
+            android:key="track1_name"
+            android:title="@string/pref_title_name" />
+        <Preference
+            android:key="track1_expiration_date"
+            android:title="@string/pref_title_expiration_date" />
+        <Preference
+            android:key="track1_service_code"
+            android:title="@string/pref_title_service_code" />
+        <Preference
+            android:key="track1_discretionary_data"
+            android:title="@string/pref_title_discretionary_data" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="track2"
+        android:title="@string/pref_title_track2" >
+        <Preference
+            android:key="track2_primary_account_number"
+            android:title="@string/pref_title_primary_account_number" />
+        <Preference
+            android:key="track2_expiration_date"
+            android:title="@string/pref_title_expiration_date" />
+        <Preference
+            android:key="track2_service_code"
+            android:title="@string/pref_title_service_code" />
+        <Preference
+            android:key="track2_discretionary_data"
+            android:title="@string/pref_title_discretionary_data" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
