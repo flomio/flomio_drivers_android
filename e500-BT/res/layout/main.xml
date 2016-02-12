@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     android:orientation="vertical"
+	 android:layout_width="fill_parent"
+	 android:layout_height="fill_parent"
+	 android:layout_gravity="fill_vertical"
+	 android:background="#ffffff"
+	
+    >
+	<RelativeLayout
+	        android:id="@+id/topView"
+	        android:layout_centerHorizontal="false"
+	        android:layout_width="fill_parent"
+	        android:layout_height="80px"
+	>
+	    <Button
+	        android:id="@+id/connect"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dip"
+	        android:text="Connect" 
+	        android:onClick="onConnectClick"
+	   	/>
+	    
+	
+	        
+	   <TextView
+	        android:id="@+id/label"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="20dip"
+	        android:layout_marginLeft="10dip"
+	        android:layout_toRightOf="@+id/connect" 
+	        android:text="" 
+	   />
+	        
+	    <Button
+	        android:id="@+id/clear"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dip"
+	        android:layout_marginLeft="0dip"
+	        android:layout_toLeftOf="@+id/quit" 
+	        android:text="Clear"
+	        android:onClick="onClearClick"
+	    />
+	    
+	                
+	   <Button
+	        android:id="@+id/quit"
+	        android:layout_alignParentRight="true"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dip"
+	        android:layout_marginLeft="0dip"
+	 
+	        android:text=" X "
+	        android:onClick="onQuitClick"
+	    />
+	</RelativeLayout>
+
+	  	  	
+		    <EditText android:id="@+id/body1" 
+		    	android:layout_width="fill_parent"
+				android:layout_height="fill_parent"
+				
+			    android:scrollbars="vertical"
+			 	android:gravity="top"
+			 	android:editable="false"
+			 	android:layout_weight="30"
+			 
+				 />
+				 
+  	
+		  	
+			<EditText android:id="@+id/body2" 
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent"
+				android:layout_below="@+id/body1"
+			    android:layout_marginBottom="10dip"
+		        android:scrollbars="vertical"
+			 	android:gravity="top"
+			 	android:editable="false"
+			 	android:typeface="monospace"
+			 	android:textSize="12sp"
+			 	android:layout_weight="20"
+				 />
+
+</LinearLayout>

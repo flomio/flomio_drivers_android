@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+         android:layout_width="fill_parent"
+         android:layout_height="fill_parent"
+         android:background="#FFFFFF"
+         android:paddingLeft="8dp"
+         android:paddingRight="8dp">
+
+     <ListView android:id="@android:id/list"
+               android:layout_width="fill_parent"
+               android:layout_height="fill_parent"
+               android:background="#FFFFFF"
+               android:layout_weight="1"
+               android:dividerHeight="1sp"
+               android:divider="#DDDDDD"
+               android:drawSelectorOnTop="false"
+         
+               	android:scrollingCache="false" 
+               	android:clickable="true"
+               	
+  
+               />
+
+     <TextView android:id="@android:id/empty"
+               android:layout_width="fill_parent"
+               android:layout_height="fill_parent"
+               android:background="#FFFFFF"
+               android:paddingTop = "10sp"
+               android:textSize="16sp"
+               android:text="No bluetooth devices detected"/>
+
+  
+</LinearLayout>
