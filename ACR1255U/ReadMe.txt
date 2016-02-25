@@ -17,8 +17,8 @@ To install the library to your development environment, see the section
 Release Notes
 -------------
 
-Version:      1.0.0 Preview 6
-Release Date: 29/5/2015
+Version:      1.0.0 Preview 7
+Release Date: 29/1/2016
 
 This preview library is subject to change. It may or may not work with your
 Android device.
@@ -62,6 +62,10 @@ History
 -------
 
 Library
+
+v1.0.0 Preview 7 (29/1/2016)
+- Enable serial number string in getDeviceInfo() method of Acr1255uj1Reader
+  class.
 
 v1.0.0 Preview 6 (29/5/2015)
 - Require ACR3901U-S1 v1.04 or above.
@@ -166,7 +170,7 @@ File Contents
 API Documentation:  ACSBluetooth\doc
 Sample Application: BTDemo
 Android Package:    BTDemo.apk
-Class Library:      BTDemo\libs\acsbt-1.0.0preview6.jar
+Class Library:      BTDemo\libs\acsbt-1.0.0preview7.jar
 
 
 
@@ -183,7 +187,7 @@ Fax: +852 2796 1286
 
 
 -------------------------------------------------------------------------------
-Copyright (C) 2014-2015 Advanced Card Systems Ltd. All Rights Reserved.
+Copyright (C) 2014-2016 Advanced Card Systems Ltd. All Rights Reserved.
 
 No part of this reference manual may be reproduced or transmitted in any from
 without the expressed, written permission of ACS.
