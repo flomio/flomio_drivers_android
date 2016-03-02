@@ -63,7 +63,7 @@ Android Studio installation
 
  2. Select Import project (Eclipse ADT, Gradle, etc.)
 
- 3. In the Project Files, Select app -> app -> build.gradle
+ 3. Once imported, open the Project navigator on left sidebar (1: Project). Then select "Project" from the drop down at the top portion of the Project Navigator and select app -> app -> build.gradle
 
  4. Set compileSdkVersion and targetSdkVersion to 23.
 
