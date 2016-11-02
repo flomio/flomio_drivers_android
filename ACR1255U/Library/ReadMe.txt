@@ -17,8 +17,8 @@ To install the library to your development environment, see the section
 Release Notes
 -------------
 
-Version:      1.0.0 Preview 7
-Release Date: 29/1/2016
+Version:      1.0.0 Preview 8
+Release Date: 25/4/2016
 
 This preview library is subject to change. It may or may not work with your
 Android device.
@@ -62,6 +62,9 @@ History
 -------
 
 Library
+
+v1.0.0 Preview 8 (25/4/2016)
+- Handle sleep notification from ACR1255U-J1 reader.
 
 v1.0.0 Preview 7 (29/1/2016)
 - Enable serial number string in getDeviceInfo() method of Acr1255uj1Reader
@@ -117,6 +120,13 @@ v1.0.0 Preview 1 (19/6/2014)
 
 Demo
 
+v1.0.0 Preview 7 (25/4/2016)
+- Use getCardStatusString() method in onCardStatusChange() method of
+  ReaderActivity class.
+- Fix incorrect mTxtCardStatus in onRestoreInstanceState() method of
+  ReaderActivity class.
+- Update the version to 1.0.0 (7).
+
 v1.0.0 Preview 6 (29/5/2015)
 - Fix the bug that System ID is not correctly displayed.
 - Rename com.btdemo to com.acs.btdemo.
@@ -170,7 +180,7 @@ File Contents
 API Documentation:  ACSBluetooth\doc
 Sample Application: BTDemo
 Android Package:    BTDemo.apk
-Class Library:      BTDemo\libs\acsbt-1.0.0preview7.jar
+Class Library:      BTDemo\libs\acsbt-1.0.0preview8.jar
 
 
 

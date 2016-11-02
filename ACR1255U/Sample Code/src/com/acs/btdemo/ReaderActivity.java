@@ -374,13 +374,8 @@ public class ReaderActivity extends Activity implements
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if (sta == BluetoothReader.CARD_STATUS_ABSENT) {
-                                    mTxtCardStatus.setText("Absent");
-                                } else if (sta == BluetoothReader.CARD_STATUS_PRESENT) {
-                                    mTxtCardStatus.setText("Present");
-                                } else {
-                                    mTxtCardStatus.setText("");
-                                }
+                                mTxtCardStatus
+                                        .setText(getCardStatusString(sta));
                             }
                         });
                     }
@@ -1113,8 +1108,8 @@ public class ReaderActivity extends Activity implements
                 .getString(BATTERY_STATUS_2_STRING));
         mTxtSlotStatus
                 .setText(savedInstanceState.getString(SLOT_STATUS_STRING));
-        mTxtCardStatus
-                .setText(savedInstanceState.getString(SLOT_STATUS_STRING));
+        mTxtCardStatus.setText(savedInstanceState
+                .getString(SLOT_STATUS_2_STRING));
 
         mEditMasterKey
                 .setText(savedInstanceState.getString(AUTHENTICATION_KEY));
