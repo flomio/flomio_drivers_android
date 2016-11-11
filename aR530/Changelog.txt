@@ -1,0 +1,23 @@
+2016/11/03
+	Check the lib and found missing buzzer API, just modify the latest lib and add buzzer API in
+2016/10/27
+	Update android lib, upload wrong lib in android SDK. Very sorry about this.
+2016/07/15
+	Update Android SDK, add FTNFC_transmitcustomCmd API into SDK, the API allow user send command to reader directly. The format is below:
+	NAD+PCB+APDU's LENGTH+APDU
+	For example, send get random number, it should be like below:
+	NAD+PCB+APDU's LENGTH+APDU
+	00+00+05+0084000008
+2016/03/04
+	Update reader firmware, add control buzzer function into SDK
+2015/05/08
+	Bug fixed of researching card
+2015/4/27
+	Removed chinese words in UI
+	Removed response string ¡°Response:\n¡±
+	return data type change to byte array, the before version was returned hex string
+2015/4/16
+	Add Get smartcard reader UID API
+2015/02/06
+	Add support for HTC One S/Z560E and X720D.onex
+	The max input data length is 255 bytes

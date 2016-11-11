@@ -1,0 +1,7 @@
+eclipse.preferences.version=1
+encoding//jni/AudioPassApi/Wave.cpp=gbk
+encoding//jni/CardReaderAPI=UTF-8
+encoding//jni/CardReaderAPI/CardReader.cpp=GBK
+encoding//jni/CardReaderAPI/CardReaderAPI.cpp=GBK
+encoding//jni/CardReaderAPI/utils.cpp=GBK
+encoding//jni/CardReaderAPI/utils.h=GBK

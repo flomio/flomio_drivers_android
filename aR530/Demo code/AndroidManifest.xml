@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.ft.mobile.reader.test"
+    android:versionCode="1"
+    android:versionName="1.1.5" >
+
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="15" />
+    
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/><!-- SDcard permission -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>	<!-- play sounds -->
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- get phone No.-->
+	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        
+        <activity
+            android:name="com.ft.mobile.reader.test.TestParamActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" >
+            <!-- <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter> -->
+        </activity>
+        
+        <activity
+            android:name="com.ft.mobile.reader.test.MainActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
+            
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            
+        </activity>
+        
+        <activity
+            android:name="com.ft.mobile.reader.test.M1Activity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+        
+        <activity
+            android:name="com.ft.mobile.reader.test.M1BinaryActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+        
+        <activity
+            android:name="com.ft.mobile.reader.test.M1ValueActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+        
+    </application>
+
+</manifest>
