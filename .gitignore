@@ -1,4 +1,5 @@
 # built application files
+!*/BTDemo.apk
 !*/AudioJackDemo.apk
 *.apk
 *.ap_
