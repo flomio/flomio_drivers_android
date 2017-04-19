@@ -1,4 +1,4 @@
-FloJack Java NFC Client Library (alpha)
+FloJack Driver Libraries
 ===============
 
 A client library for use with the FloJack NFC reader.
